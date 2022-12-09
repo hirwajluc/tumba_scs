@@ -45,8 +45,8 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                         <?php
                                         ?>
-                                        <a class="dropdown-item" href="<?= route_to('student.info', 3); ?>">View</a>
-                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="<?= route_to('student.info', 2); ?>">View</a>
+                                        <a class="dropdown-item" href="<?=route_to('student.edit', 2)?>">Edit</a>
                                         <a class="dropdown-item warning confirm" href="#">Delete</a>
                                     </div>
                                 </div>
@@ -68,8 +68,8 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                         <?php
                                         ?>
-                                        <a class="dropdown-item" href="<?= route_to('student.info', 3); ?>">View</a>
-                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="admin/stdEdit/4">View</a>
+                                        <a class="dropdown-item" href="<?=route_to('student.edit', 3)?>">Edit</a>
                                         <a class="dropdown-item warning confirm" href="#">Delete</a>
                                     </div>
                                 </div>

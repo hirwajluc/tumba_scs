@@ -29,6 +29,11 @@ class MainController extends BaseController
         $data['pageTitle'] = "Admin | Student";
         $data['pageName'] = "Student Info";
         return view('admin/studentInfo', $data);
-        //echo $id;
+    }
+
+    public function editStudent($id){
+        $data['pageTitle'] = "Admin | Student";
+        $data['pageName'] = "Etid Student Info";
+        return view('admin/studentEdit', $data);
     }
 }

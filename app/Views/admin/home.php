@@ -3,7 +3,7 @@
     <link href="assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="assets/css/forms/switches.css">
     <link href="plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="assets/css/widgets/modules-widgets.css"> 
+    <link rel="stylesheet" type="text/css" href="assets/css/widgets/modules-widgets.css">
 <?= $this->endSection();?>
 <?= $this->section('content');?>
     <div class="layout-px-spacing">
@@ -382,4 +382,25 @@ console.log(e);
 }
 
 </script>
+<?php
+$session = \Config\Services::session();
+if ($session->getFlashdata('success')) {
+    ?>
+    <script>
+        const toast = swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            padding: '2em'
+        });
+        toast({
+            type: 'success',
+            title: '<?=$session->getFlashdata("success");?>',
+            padding: '2em',
+        })
+    </script>
+    <?php
+}
+?>
 <?= $this->endSection();?>
