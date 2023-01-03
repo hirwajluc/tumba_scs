@@ -8,32 +8,67 @@ class MainController extends BaseController
 {
     public function index()
     {
-        $data['pageTitle'] = "Admin | Home";
-        $data['pageName'] = "DashBoard";
-        return view('admin/home', $data);
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | Home";
+            $data['pageName'] = "DashBoard";
+            return view('admin/home', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 
     public function newStudentForm(){
-        $data['pageTitle'] = "Admin | New Student";
-        $data['pageName'] = "Register Student";
-        return view('admin/studentNew', $data);
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | New Student";
+            $data['pageName'] = "Register Student";
+            return view('admin/studentNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 
     public function viewStudents(){
-        $data['pageTitle'] = "Admin | View Students";
-        $data['pageName'] = "Students List";
-        return view('admin/studentView', $data);
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | View Students";
+            $data['pageName'] = "Students List";
+            return view('admin/studentView', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 
     public function getStudentInfo($id){
-        $data['pageTitle'] = "Admin | Student";
-        $data['pageName'] = "Student Info";
-        return view('admin/studentInfo', $data);
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | Student";
+            $data['pageName'] = "Student Info";
+            return view('admin/studentInfo', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 
     public function editStudent($id){
-        $data['pageTitle'] = "Admin | Student";
-        $data['pageName'] = "Etid Student Info";
-        return view('admin/studentEdit', $data);
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | Student";
+            $data['pageName'] = "Edit Student Info";
+            return view('admin/studentEdit', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 }

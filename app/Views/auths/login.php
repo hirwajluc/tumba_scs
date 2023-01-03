@@ -115,6 +115,7 @@
     <script src="assets/js/components/notification/custom-snackbar.js"></script>
     <!--  END CUSTOM SCRIPTS FILE  -->
     <?php
+    $session = session();
     if ($validation -> getError('username')) {
         ?>
         <script>
@@ -133,6 +134,18 @@
         <script>
             Snackbar.show({
                 text: '<?=$validation -> getError('password');?>',
+                actionText: 'X',
+                actionTextColor: '#ffffff',
+                backgroundColor: '#e7515a',
+                duration: 3000
+            });
+        </script>
+        <?php
+    } else if($session->getFlashdata('fail')){
+        ?>
+        <script>
+            Snackbar.show({
+                text: '<?=$session->getFlashdata('fail');?>',
                 actionText: 'X',
                 actionTextColor: '#ffffff',
                 backgroundColor: '#e7515a',

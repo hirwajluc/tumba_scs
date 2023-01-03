@@ -37,6 +37,7 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'MainController::index');
 $routes->get('/login', 'Login::index', ['as' => 'login']);
+$routes->get('/logout', 'Logout::index', ['as' => 'logout']);
 $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 
 $routes->group("admin", function($routes){
