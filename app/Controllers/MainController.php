@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\Department;
+use App\Models\Option;
 
 class MainController extends BaseController
 {
@@ -66,6 +68,109 @@ class MainController extends BaseController
             $data['pageTitle'] = "Admin | Student";
             $data['pageName'] = "Edit Student Info";
             return view('admin/studentEdit', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    public function newDepartmentForm(){
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Admin | New Department";
+            $data['pageName'] = "Register Department";
+            return view('admin/departmentNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    public function saveDepartment(){
+        $data['pageTitle'] = "Admin | New Department";
+        $data['pageName'] = "Register Department";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $depart = new Department();
+            helper(['form', 'url']);
+            $rules = [
+                'code' => 'required|min_length[2]|alpha_numeric_space|is_unique[scs_departments.dpt_code]',
+                'name' => 'required|min_length[4]|alpha_numeric_space|is_unique[scs_departments.dpt_name]'
+            ];
+            $error = $this->validate($rules);
+
+            if (!$error) {
+                $data['error'] = $this->validator;
+                $data['dpt_code'] = $this->request->getVar('code');
+                $data['dpt_name'] = $this->request->getVar('name');
+                return view('admin/departmentNew', $data);
+            } else {
+                $dptData = [
+                    'dpt_code' => $this->request->getPost('code'),
+                    'dpt_name' => $this->request->getPost('name')
+                ];
+                $depart->insert($dptData);
+                $session->setFlashdata('success', $this->request->getPost('code'));
+                return redirect()->to(base_url('/admin/department'));
+            }
+            
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    public function newOptionForm(){
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $dpt_data = new Department();
+        if ($id) {
+            $data['pageTitle'] = "Admin | New Option";
+            $data['pageName'] = "Register Option";
+            $data['dept'] = $dpt_data->findAll();
+            return view('admin/optionNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    public function saveOption(){
+        $data['pageTitle'] = "Admin | New Option";
+        $data['pageName'] = "Register Option";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $depart = new Department();
+            $data['dept'] = $depart->findAll();
+            $option = new Option();
+            helper(['form', 'url']);
+            $rules = [
+                'department' => 'required',
+                'code' => 'required|min_length[2]|alpha_numeric_space|is_unique[scs_options.opt_code]',
+                'name' => 'required|min_length[4]|alpha_numeric_space|is_unique[scs_options.opt_name]'
+            ];
+            $error = $this->validate($rules);
+
+            if (!$error) {
+                $data['error'] = $this->validator;
+                $data['department'] = $this->request->getVar('department');
+                $data['opt_code'] = $this->request->getVar('code');
+                $data['opt_name'] = $this->request->getVar('name');
+                return view('admin/optionNew', $data);
+            } else {
+                $optData = [
+                    'opt_department' => $this->request->getPost('department'),
+                    'opt_code' => $this->request->getPost('code'),
+                    'opt_name' => $this->request->getPost('name')
+                ];
+                $option->insert($optData);
+                $session->setFlashdata('success', $this->request->getPost('code'));
+                return redirect()->to(base_url('/admin/option'));
+            }
+            
         } else{
             $session->destroy();
             return view('auths/login');

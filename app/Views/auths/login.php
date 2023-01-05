@@ -77,15 +77,15 @@
                             </div>
                         </form>  
                         <?php
-                                if ($validation -> getError('username')) {
-                                    ?>
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong><?=$validation->getError('username');?></strong>
-                                    </span>
-                                    <?php
-                                }
-                                ?>                      
-                        <p class="">Copyright © <?=date('Y');?> <a target="_blank" href="https://iprctumba.rp.ac.rw">IPRC Tumba</a>, All rights reserved.</p> 
+                        if ($validation -> getError('username')) {
+                            ?>
+                            <span class="invalid-feedback" role="alert">
+                                <strong><?=$validation->getError('username');?></strong>
+                            </span>
+                            <?php
+                        }
+                        ?>                      
+                        <p class="">Copyright © 2022-<?=date('Y');?> <a target="_blank" href="https://iprctumba.rp.ac.rw">RP / IPRC Tumba</a>, All rights reserved.</p>
 
                     </div>                    
                 </div>
@@ -149,7 +149,7 @@
                 actionText: 'X',
                 actionTextColor: '#ffffff',
                 backgroundColor: '#e7515a',
-                duration: 3000
+                duration: 5000
             });
         </script>
         <?php

@@ -34,7 +34,7 @@ class ScsDataSeeder extends Seeder
             'usr_username' => 'admin',
             'usr_password' => 'admin@123',
             'usr_title' => 1,
-            'usr_status' => 'admin'
+            'usr_status' => 'not active'
         ];
         
         $this->db->table('scs_users')->insert($userData);

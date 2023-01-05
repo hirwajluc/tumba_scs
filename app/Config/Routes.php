@@ -43,9 +43,14 @@ $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 $routes->group("admin", function($routes){
     $routes->add('home', 'MainController::index', ['as' => 'admin.home']);
     $routes->get('student', 'MainController::newStudentForm', ['as' => 'student.new']);
+    $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
+    $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
+    $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
+    $routes->post('optAdd', 'MainController::saveOption', ['as' => 'option.save']);
     $routes->get('allStd', 'MainController::viewStudents', ['as' => 'student.list']);
     $routes->get('stdInfo/(:num)', 'MainController::getStudentInfo/$1', ['as' => 'student.info']);
     $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
+
 });
 
 /*

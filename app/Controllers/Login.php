@@ -40,17 +40,20 @@ class Login extends BaseController
                 ->first();
             
             if($userData){
-                
-                //$session->start();
-                $session_data = [
-                    'userID' => $userData->usr_id,
-                    'role' => $userData->usr_role,
-                    'firstname' => $userData->usr_firstname,
-                    'lastname' => $userData->usr_lastname
-                ];
-                $session->set($session_data);
-                $session -> setFlashdata('success', 'Logged in Successfully');
-                return $this->response->redirect(route_to('admin.home'));
+                if ($userData->usr_status == 'active') {
+                    $session_data = [
+                        'userID' => $userData->usr_id,
+                        'role' => $userData->usr_role,
+                        'firstname' => $userData->usr_firstname,
+                        'lastname' => $userData->usr_lastname
+                    ];
+                    $session->set($session_data);
+                    $session -> setFlashdata('success', 'Logged in Successfully');
+                    return $this->response->redirect(route_to('admin.home'));
+                } else {
+                    $session -> setFlashdata('fail', 'Your account is '.$userData->usr_status. ', contact System Admin for support');
+                    return $this->response->redirect(route_to('login'));
+                }
             } else{
                 $session -> setFlashdata('fail', 'Invalid Username or Password');
                 return $this->response->redirect(route_to('login'));
