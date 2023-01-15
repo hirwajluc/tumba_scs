@@ -24,7 +24,29 @@ class Option extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
+    protected $validationRules      = [
+        'department' => [
+            'label' => 'Option Department',
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Please select department'
+            ]
+        ],
+        'code' => [
+            'label' => 'Option Code',
+            'rules' => 'required|min_length[2]|alpha_numeric_space|is_unique[scs_options.opt_code]',
+            'errors' => [
+                'is_unique' => 'The {field} already exists'
+            ]
+        ],
+        'name' => [
+            'label' => 'Option Name',
+            'rules' => 'required|min_length[4]|alpha_numeric_space|is_unique[scs_options.opt_name]',
+            'errors' => [
+                'is_unique' => 'The {field} already exists'
+            ]
+        ]
+    ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;

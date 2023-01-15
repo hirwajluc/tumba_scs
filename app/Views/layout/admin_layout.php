@@ -146,7 +146,7 @@ $session = \Config\Services::session();
                                 <a href="<?=route_to('student.list');?>"> Manage Students </a>
                             </li>
                             <li>
-                                <a href="<?=route_to('card.new');?>"> Student Cards </a>
+                                <a href="<?=route_to('card.new');?>"> Student Card </a>
                             </li>
                         </ul>
                     </li>
@@ -213,7 +213,7 @@ $session = \Config\Services::session();
                                 <a href="<?=route_to('option.new');?>"> New Option </a>
                             </li>
                             <li>
-                                <a href="{{ route('department.list')}}"> Manage Departments </a>
+                                <a href="<?=route_to('departmentList');?>"> Manage Departments </a>
                             </li>
                         </ul>
                     </li>
@@ -264,6 +264,7 @@ $session = \Config\Services::session();
             App.init();
         });
     </script>
+    <script src="plugins/highlight/highlight.pack.js"></script>
     <script src="assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN THEME GLOBAL STYLE -->

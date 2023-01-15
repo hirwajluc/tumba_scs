@@ -41,16 +41,33 @@ $routes->get('/logout', 'Logout::index', ['as' => 'logout']);
 $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 
 $routes->group("admin", function($routes){
+    //Dashboard
     $routes->add('home', 'MainController::index', ['as' => 'admin.home']);
+
+    //For Student
     $routes->get('student', 'MainController::newStudentForm', ['as' => 'student.new']);
-    $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
-    $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
-    $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
-    $routes->post('optAdd', 'MainController::saveOption', ['as' => 'option.save']);
+    $routes->post('stdAdd', 'MainController::saveStudent', ['as' => 'student.save']);
     $routes->get('allStd', 'MainController::viewStudents', ['as' => 'student.list']);
     $routes->get('stdInfo/(:num)', 'MainController::getStudentInfo/$1', ['as' => 'student.info']);
     $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
+    $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
+    $routes->get('stdCard', 'MainController::newCardForm', ['as' => 'card.new']);
+    $routes->post('stdCardOp', 'MainController::saveStudentCard', ['as' => 'card.save']);
+    $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
+    $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
 
+    //For Department
+    $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
+    $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
+    $routes->get('dptEdit/(:num)', 'MainController::editDepartment/$1', ['as' => 'department.edit']);
+    $routes->get('dptList', 'MainController::listDepartments', ['as' => 'departmentList']);
+    $routes->post('dptUpd', 'MainController::updateDepartment', ['as' => 'department.update']);
+
+    //For Option
+    $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
+    $routes->post('optionJson', 'MainController::getOptionJson', ['as' => 'option.json']);
+    $routes->post('optAdd', 'MainController::saveOption', ['as' => 'option.save']);
+    
 });
 
 /*

@@ -15,7 +15,7 @@ class CreateCardsTable extends Migration
                 `crd_staff` INT,
                 `crd_student` INT,
                 `crd_status` varchar(20) NOT NULL,
-                `crd_expires` varchar(255) NOT NULL,
+                `crd_acad_year` INT,
                 `crd_created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 `crd_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (`crd_id`)

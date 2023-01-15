@@ -15,6 +15,7 @@ class CreateRelationsTable extends Migration
         $this->db->query("ALTER TABLE `scs_staffs` ADD CONSTRAINT `scs_staffs_fk2` FOREIGN KEY (`stf_title`) REFERENCES `scs_titles`(`tit_id`);");
         $this->db->query("ALTER TABLE `scs_cards` ADD CONSTRAINT `scs_cards_fk0` FOREIGN KEY (`crd_staff`) REFERENCES `scs_staffs`(`stf_id`);");
         $this->db->query("ALTER TABLE `scs_cards` ADD CONSTRAINT `scs_cards_fk1` FOREIGN KEY (`crd_student`) REFERENCES `scs_students`(`std_id`);");
+        $this->db->query("ALTER TABLE `scs_cards` ADD CONSTRAINT `scs_cards_fk2` FOREIGN KEY (`crd_acad_year`) REFERENCES `scs_acad_year`(`acd_id`);");
         $this->db->query("ALTER TABLE `scs_users` ADD CONSTRAINT `scs_users_fk0` FOREIGN KEY (`usr_role`) REFERENCES `scs_roles`(`rol_id`);");
         $this->db->query("ALTER TABLE `scs_users` ADD CONSTRAINT `scs_users_fk1` FOREIGN KEY (`usr_title`) REFERENCES `scs_titles`(`tit_id`);");
         $this->db->query("ALTER TABLE `scs_logs` ADD CONSTRAINT `scs_logs_fk0` FOREIGN KEY (`log_gate_user`) REFERENCES `scs_users`(`usr_id`);");
