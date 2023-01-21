@@ -152,7 +152,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $sessionDriver = FileHandler::class;
+    public $sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler';
 
     /**
      * --------------------------------------------------------------------------
