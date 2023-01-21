@@ -10,7 +10,8 @@ class ScsDataSeeder extends Seeder
     {
         // Seed roles data
         $roleData = [
-            'rol_name' => 'admin'
+            'rol_name' => 'admin',
+            'rol_rank' => 1
         ];
 
         $this->db->table('scs_roles')->insert($roleData);

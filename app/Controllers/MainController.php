@@ -7,10 +7,16 @@ use App\Models\AcadYear;
 use App\Models\Card;
 use App\Models\Department;
 use App\Models\Option;
+use App\Models\Role;
 use App\Models\Student;
+use App\Models\Title;
+use App\Models\User;
 
 class MainController extends BaseController
 {
+    /**
+     * The default function for the admin controller
+     */
     public function index()
     {
         $session = \Config\Services::session();
@@ -25,6 +31,38 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to generate Username from Firstname and Lastname
+     */
+    public function generate_username($firstname, $lastname){
+        $lnwords = explode(" ", strval($lastname));
+        $lnacronym = "";
+    
+        foreach ($lnwords as $w) {
+          $lnacronym .= strtolower(substr($w, 0, 1));
+        }
+        //echo $lnacronym;
+        $fnnew = str_replace(['\'', ' '], '',strtolower(strval($firstname)));
+        return $lnacronym.$fnnew;
+    }
+
+    /**
+     * Function to generate Username from Firstname and Lastname
+     */
+    public function randomPassword() {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
+    }
+
+    /**
+     * Function to display a new student form
+     */
     public function newStudentForm(){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -40,6 +78,30 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to display a new user form
+     */
+    public function newUserForm()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $role_data = new Role();
+        $title_data = new Title();
+        if ($id) {
+            $data['pageTitle'] = "Admin | New User";
+            $data['pageName'] = "Register User";
+            $data['roles'] = $role_data->findAll();
+            $data['titles'] = $title_data->findAll();
+            return view('admin/userNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to display a new card form
+     */
     public function newCardForm($regno='')
     {
         $session = \Config\Services::session();
@@ -56,6 +118,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to update a card status
+     */
     public function changeCardStatus($action, $cardId, $std_id)
     {
         /**
@@ -102,6 +167,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save student card data
+     */
     public function saveStudentCard()
     {
         $session = \Config\Services::session();
@@ -170,6 +238,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to retrieve all students data and display them
+     */
     public function viewStudents(){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -187,6 +258,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to retrieve a single student info
+     */
     public function getStudentInfo($std_id){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -206,6 +280,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to display new Department form
+     */
     public function newDepartmentForm(){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -219,6 +296,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save Department data
+     */
     public function saveDepartment(){
         $data['pageTitle'] = "Admin | New Department";
         $data['pageName'] = "Register Department";
@@ -254,6 +334,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to display new option form
+     */
     public function newOptionForm(){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -269,6 +352,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to display student edit form
+     */
     public function editStudent($std_id = 0){
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -298,6 +384,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save Student data
+     */
     public function saveStudent()
     {
         $session = \Config\Services::session();
@@ -437,6 +526,137 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save User data
+     */
+    public function saveUser()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $role_data = new Role();
+        $title_data = new Title();
+        $user = new User();
+        if ($id) {
+            $data['pageTitle'] = "Admin | Saving User";
+            $data['pageName'] = "Register User";
+            helper(['form', 'url']);
+            $image = \Config\Services::image();
+            $data['roles'] = $role_data->findAll();
+            $data['titles'] = $title_data->findAll();
+
+            $validation = $this->validate([
+                'firstname' => [
+                    'label' => 'User Firstname',
+                    'rules' => 'required|min_length[3]'
+                ],
+                'lastname' => [
+                    'label' => 'User Lastname',
+                    'rules' => 'required|min_length[3]'
+                ],
+                'role' => [
+                    'label' => 'User Role',
+                    'rules' => 'required'
+                ],
+                'title' => [
+                    'label' => 'User Title',
+                    'rules' => 'required'
+                ],
+                'gender' => [
+                    'label' => 'Student Gender',
+                    'rules' => 'required'
+                ],
+                'email' => [
+                    'label' => 'User Email',
+                    'rules' => 'required|min_length[9]|is_unique[scs_students.std_email]|valid_email',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists'
+                    ]
+                ],
+                'phone' => [
+                    'label' => 'User Phone',
+                    'rules' => 'required|min_length[10]'
+                ],
+                'photo' => [
+                    'label' => 'User Phonto',
+                    'rules' => 'uploaded[photo]'
+                        . '|is_image[photo]'
+                        . '|mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                        //. '|max_size[userfile,100]'
+                        //. '|max_dims[userfile,1024,768]',
+                ]
+            ]);
+            if (!$validation) {
+                $data ['errors'] = $this->validator;
+                $data ['firstname'] = $this->request->getPost('firstname');
+                $data ['lastname'] = $this->request->getPost('lastname');
+                $data ['role'] = $this->request->getPost('role');
+                $data ['title'] = $this->request->getPost('title');
+                $data ['gender'] = $this->request->getPost('gender');
+                $data ['email'] = $this->request->getPost('email');
+                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
+                return view('admin/userNew', $data);
+            }
+    
+            $file = $this->request->getFile('photo');
+             
+    
+            if ($file->hasMoved() == null) {
+                $uploadPath = FCPATH . 'uploads/users/';
+
+                // Make sure the upload directory exists
+                if (! is_dir($uploadPath))
+                {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                $newName = 'user_'.$file->getRandomName();
+                $username = $this->generate_username($this->request->getPost('firstname'), $this->request->getPost('lastname'));
+                $password = $this->randomPassword();
+                $stdData = [
+                    'usr_role' => $this->request->getPost('role'),
+                    'usr_firstname' => $this->request->getPost('firstname'),
+                    'usr_lastname' => $this->request->getPost('lastname'),
+                    'usr_gender' => $this->request->getPost('gender'),
+                    'usr_picture' => 'uploads/users/'.$newName,
+                    'usr_email' => $this->request->getPost('email'),
+                    'usr_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone')),
+                    'usr_username' => $username,
+                    'usr_password' => $password,
+                    'usr_title' => $this->request->getPost('title'),
+                    'usr_status' => 'active'
+                ];
+                
+                if($image->withFile($file)
+                        ->fit(500,500, 'center')
+                        ->save($uploadPath. $newName, 90)
+                    ){
+                    $user->save($stdData);
+                    $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
+                    $session->setFlashdata('success', $names);
+        
+                    return view('admin/userNew', $data);
+                } else{
+                    $session->setFlashdata('fail', 'Registration failed, try again!');
+        
+                    return view('admin/userNew', $data);
+                }
+    
+                //$data = ['uploaded_flleinfo' => new File($filepath)];
+                
+            }
+            $data = ['errors' => 'The file has already been moved.'];
+    
+            //return view('upload_form', $data);
+            return view('admin/userNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to save new Student data
+     */
     public function updateStudent()
     {
         $session = \Config\Services::session();
@@ -593,6 +813,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save Option data
+     */
     public function saveOption(){
         $data['pageTitle'] = "Admin | New Option";
         $data['pageName'] = "Register Option";
@@ -629,6 +852,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to return option data as JSON
+     */
     public function getOptionJson()
     {
         $option = new Option();
@@ -637,6 +863,9 @@ class MainController extends BaseController
         echo json_encode($optionData);
     }
 
+    /**
+     * Function to return a student data as JSON
+     */
     public function getStudentJson()
     {
         $student = new Student();
@@ -648,6 +877,9 @@ class MainController extends BaseController
         echo json_encode($studentData);
     }
 
+    /**
+     * Function to retrieve all departments
+     */
     public function listDepartments()
     {
         $data['pageTitle'] = "Admin | Departments";
@@ -666,6 +898,9 @@ class MainController extends BaseController
         
     }
 
+    /**
+     * Function to display a department edit form
+     */
     public function editDepartment($dpt_id)
     {
         $data['pageTitle'] = "Admin | Department";
@@ -683,6 +918,9 @@ class MainController extends BaseController
         }
     }
 
+    /**
+     * Function to save updated department data
+     */
     public function updateDepartment()
     {
         $data['pageTitle'] = "Admin | Department";

@@ -14,6 +14,7 @@ class CreateRolesTable extends Migration
                 `rol_name` varchar(255) NOT NULL UNIQUE,
                 `rol_created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 `rol_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `rol_rank` INT NOT NULL UNIQUE,
                 PRIMARY KEY (`rol_id`)
             );
         ");

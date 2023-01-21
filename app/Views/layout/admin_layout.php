@@ -186,7 +186,7 @@ $session = \Config\Services::session();
                         </a>
                         <ul class="collapse submenu list-unstyled" id="user" data-parent="#accordionExample">
                             <li>
-                                <a href="{{ route('student.new') }}"> New User </a>
+                                <a href="<?= route_to('user.new');?>"> New User </a>
                             </li>
                             <li>
                                 <a href="{{ route('student.list') }}"> Manage Users </a>
