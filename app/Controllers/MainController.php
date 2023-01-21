@@ -22,7 +22,7 @@ class MainController extends BaseController
         $session = \Config\Services::session();
         $id = $session->get('userID');
         if ($id) {
-            $data['pageTitle'] = "Admin | Home";
+            $data['pageTitle'] = "Tumba-SCS | Home";
             $data['pageName'] = "DashBoard";
             return view('admin/home', $data);
         } else{
@@ -68,7 +68,7 @@ class MainController extends BaseController
         $id = $session->get('userID');
         $dpt_data = new Department();
         if ($id) {
-            $data['pageTitle'] = "Admin | New Student";
+            $data['pageTitle'] = "Tumba-SCS | New Student";
             $data['pageName'] = "Register Student";
             $data['dept'] = $dpt_data->findAll();
             return view('admin/studentNew', $data);
@@ -88,7 +88,7 @@ class MainController extends BaseController
         $role_data = new Role();
         $title_data = new Title();
         if ($id) {
-            $data['pageTitle'] = "Admin | New User";
+            $data['pageTitle'] = "Tumba-SCS | New User";
             $data['pageName'] = "Register User";
             $data['roles'] = $role_data->findAll();
             $data['titles'] = $title_data->findAll();
@@ -107,7 +107,7 @@ class MainController extends BaseController
         $session = \Config\Services::session();
         $id = $session->get('userID');
         if ($id) {
-            $data['pageTitle'] = "Admin | New Card";
+            $data['pageTitle'] = "Tumba-SCS | New Card";
             $data['pageName'] = "Student Card";
             $acdy = new AcadYear();
             $data['acadYear'] = $acdy->findAll();
@@ -249,9 +249,30 @@ class MainController extends BaseController
             $data['students'] = $students->join('scs_options','opt_id = std_option')
                                         ->join('scs_departments', 'dpt_id = opt_department')
                                         ->findAll();
-            $data['pageTitle'] = "Admin | View Students";
+            $data['pageTitle'] = "Tumba-SCS | View Students";
             $data['pageName'] = "Students List";
             return view('admin/studentView', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to retrieve all users data and display them
+     */
+    public function viewUsers()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $user = new User();
+            $data['users'] = $user->join('scs_roles', 'rol_id = usr_role')
+                                ->join('scs_titles', 'tit_id = usr_title')
+                                ->findAll();
+            $data['pageTitle'] = "Tumba-SCS | View Users";
+            $data['pageName'] = "Users List";
+            return view('admin/userView', $data);
         } else{
             $session->destroy();
             return view('auths/login');
@@ -271,7 +292,7 @@ class MainController extends BaseController
                                         ->join('scs_options','opt_id = std_option')
                                         ->join('scs_departments', 'dpt_id = opt_department')
                                         ->first();
-            $data['pageTitle'] = "Admin | Student";
+            $data['pageTitle'] = "Tumba-SCS | Student";
             $data['pageName'] = "Student Info";
             return view('admin/studentInfo', $data);
         } else{
@@ -287,7 +308,7 @@ class MainController extends BaseController
         $session = \Config\Services::session();
         $id = $session->get('userID');
         if ($id) {
-            $data['pageTitle'] = "Admin | New Department";
+            $data['pageTitle'] = "Tumba-SCS | New Department";
             $data['pageName'] = "Register Department";
             return view('admin/departmentNew', $data);
         } else{
@@ -300,7 +321,7 @@ class MainController extends BaseController
      * Function to save Department data
      */
     public function saveDepartment(){
-        $data['pageTitle'] = "Admin | New Department";
+        $data['pageTitle'] = "Tumba-SCS | New Department";
         $data['pageName'] = "Register Department";
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -342,7 +363,7 @@ class MainController extends BaseController
         $id = $session->get('userID');
         $dpt_data = new Department();
         if ($id) {
-            $data['pageTitle'] = "Admin | New Option";
+            $data['pageTitle'] = "Tumba-SCS | New Option";
             $data['pageName'] = "Register Option";
             $data['dept'] = $dpt_data->findAll();
             return view('admin/optionNew', $data);
@@ -362,7 +383,7 @@ class MainController extends BaseController
         $opt_data = new Option();
         $student = new Student();
         if ($id) {
-            $data['pageTitle'] = "Admin | Student";
+            $data['pageTitle'] = "Tumba-SCS | Student";
             $data['pageName'] = "Edit Student Info";
             if($std_id == 0):
                 return redirect()->to(base_url('/admin/allStd'));
@@ -385,6 +406,39 @@ class MainController extends BaseController
     }
 
     /**
+     * Function to display User edit form
+     */
+    public function editUser($usr_id = 0)
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $rol_data = new Role();
+        $tit_data = new Title();
+        $user = new User();
+        if ($id) {
+            $data['pageTitle'] = "Tumba-SCS | User";
+            $data['pageName'] = "Edit User Info";
+            if($usr_id == 0):
+                return redirect()->to(base_url('/admin/users'));
+            else:
+                helper(['form', 'url']);
+                $image = \Config\Services::image();
+                $data['roles'] = $rol_data->findAll();
+                $data['titles'] = $tit_data->findAll();
+                $data['user_data'] = $user->where('usr_id', $usr_id)
+                                        ->join('scs_roles','rol_id = usr_role')
+                                        ->join('scs_titles', 'tit_id = usr_title')
+                                        ->first();
+                $data['usr_id'] = $usr_id;
+                return view('admin/userEdit', $data);
+            endif;            
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
      * Function to save Student data
      */
     public function saveStudent()
@@ -395,7 +449,7 @@ class MainController extends BaseController
         $opt_data = new Option();
         $student = new Student();
         if ($id) {
-            $data['pageTitle'] = "Admin | Saving Student";
+            $data['pageTitle'] = "Tumba-SCS | Saving Student";
             $data['pageName'] = "Register Student";
             helper(['form', 'url']);
             $image = \Config\Services::image();
@@ -537,7 +591,7 @@ class MainController extends BaseController
         $title_data = new Title();
         $user = new User();
         if ($id) {
-            $data['pageTitle'] = "Admin | Saving User";
+            $data['pageTitle'] = "Tumba-SCS | Saving User";
             $data['pageName'] = "Register User";
             helper(['form', 'url']);
             $image = \Config\Services::image();
@@ -562,12 +616,12 @@ class MainController extends BaseController
                     'rules' => 'required'
                 ],
                 'gender' => [
-                    'label' => 'Student Gender',
+                    'label' => 'User Gender',
                     'rules' => 'required'
                 ],
                 'email' => [
                     'label' => 'User Email',
-                    'rules' => 'required|min_length[9]|is_unique[scs_students.std_email]|valid_email',
+                    'rules' => 'required|min_length[9]|is_unique[scs_users.usr_email]|valid_email',
                     'errors' => [
                         'is_unique' => 'The {field} already exists'
                     ]
@@ -665,7 +719,7 @@ class MainController extends BaseController
         $opt_data = new Option();
         $student = new Student();
         if ($id) {
-            $data['pageTitle'] = "Admin | Updating Student";
+            $data['pageTitle'] = "Tumba-SCS | Updating Student";
             $data['pageName'] = "Edit Student";
             helper(['form', 'url', 'file']);
             
@@ -814,10 +868,168 @@ class MainController extends BaseController
     }
 
     /**
+     * Function to save new User data
+     */
+    public function updateUser()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $rol_data = new Role();
+        $tit_data = new Title();
+        $user = new User();
+        if ($id) {
+            $data['pageTitle'] = "Tumba-SCS | Updating User";
+            $data['pageName'] = "Edit User";
+            helper(['form', 'url', 'file']);
+            
+            $data['roles'] = $rol_data->findAll();
+            $data['titles'] = $tit_data->findAll();
+            $usr_id = $this->request->getPost('usr_id');
+            $userData = $user->where('usr_id', $usr_id)
+                                    ->join('scs_roles','rol_id = usr_role')
+                                    ->join('scs_titles', 'tit_id = usr_title')
+                                    ->first();
+            $rules = [
+                'firstname' => [
+                    'label' => 'User Firstname',
+                    'rules' => 'required|min_length[3]'
+                ],
+                'lastname' => [
+                    'label' => 'User Lastname',
+                    'rules' => 'required|min_length[3]'
+                ],
+                'username' => [
+                    'label' => 'Username',
+                    'rules' => 'required|min_length[4]'
+                ],
+                'role' => [
+                    'label' => 'User Role',
+                    'rules' => 'required'
+                ],
+                'title' => [
+                    'label' => 'User Title',
+                    'rules' => 'required'
+                ],
+                'gender' => [
+                    'label' => 'User Gender',
+                    'rules' => 'required'
+                ],
+                'email' => [
+                    'label' => 'User Email',
+                    'rules' => 'required|min_length[9]|is_unique[scs_users.usr_email,usr_id,{usr_id}]|valid_email',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists'
+                    ]
+                ],
+                'phone' => [
+                    'label' => 'User Phone',
+                    'rules' => 'required|min_length[10]'
+                ],
+                'photo' => [
+                    'label' => 'User Phonto',
+                    'rules' => 'uploaded[photo]'
+                        . '|is_image[photo]'
+                        . '|mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                        //. '|max_size[userfile,100]'
+                        //. '|max_dims[userfile,1024,768]',
+                ]
+            ];
+            if (file_exists($this->request->getFile('photo')) != null) {
+                $rules['photo'] = [
+                    'label' => 'Student Photo',
+                    'rules' => 'uploaded[photo]'
+                    . '|is_image[photo]'
+                    . '|mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                    //. '|max_size[userfile,100]'
+                    //. '|max_dims[userfile,1024,768]',))
+                ];
+            }
+            $validation = $this->validate($rules);
+            
+            if (!$validation) {
+                $data['user_data'] = $userData;
+                $data ['errors'] = $this->validator;
+                $data ['std_id'] = $this->request->getPost('std_id');
+                $data ['firstname'] = $this->request->getPost('firstname');
+                $data ['lastname'] = $this->request->getPost('lastname');
+                $data ['regno'] = $this->request->getPost('regno');
+                $data ['email'] = $this->request->getPost('email');
+                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
+                $data ['department'] = $this->request->getPost('department');
+                $data ['option'] = $this->request->getPost('option');
+                $data ['level'] = $this->request->getPost('level');
+                $data ['gender'] = $this->request->getPost('gender');
+                //$session->setFlashdata('fail', 'Not Upladed');
+                return view('admin/studentEdit', $data);
+            }
+    
+            $file = $this->request->getFile('photo');
+            $stdData = [
+                'std_option' => $this->request->getPost('option'),
+                'std_regno' => $this->request->getPost('regno'),
+                'std_firstname' => $this->request->getPost('firstname'),
+                'std_lastname' => $this->request->getPost('lastname'),
+                'std_gender' => $this->request->getPost('gender'),
+                'std_level' => $this->request->getPost('level'),
+                'std_status' => 'active',
+                'std_email' => $this->request->getPost('email'),
+                'std_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'))
+            ];
+            $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
+
+            if (file_exists($this->request->getFile('photo')) != null) {
+                
+                $image = \Config\Services::image();
+                //$files  = new FileCollection();
+                //$files->removeFile(FCPATH .'uploads/students/'.$this->request->getPost('regno').'_profile.'.$file->getExtension());
+                
+                if (file_exists(FCPATH.$studentData->std_picture) != null) {
+                    unlink(FCPATH.$studentData->std_picture);
+                }
+
+                if (! $file->hasMoved()) {
+                    $uploadPath = FCPATH . 'uploads/students/';
+    
+                    $newName = $this->request->getPost('regno').'_profile.'.$file->getExtension() ;
+                    $stdData['std_picture'] = 'uploads/students/'.$newName;
+                    
+                    if($image->withFile($file)
+                            ->fit(500,500, 'center')
+                            ->save($uploadPath. $newName, 90)
+                        ){
+                        $student->update($std_id, $stdData);
+                        $session->setFlashdata('success', $names);
+            
+                        return redirect()->to(base_url('/admin/allStd'));
+                    } else{
+                        $session->setFlashdata('fail', 'Edit failed, try again!');
+            
+                        return view('admin/studentEdit', $data);
+                    }
+                    
+                }
+            } else {
+                $student->update($std_id, $stdData);
+                $session->setFlashdata('success', $names);
+                return redirect()->to(base_url('/admin/allStd'));
+            }
+            
+             
+    
+            
+            $data = ['errors' => 'The file has already been moved.'];
+            return view('admin/studentEdit', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
      * Function to save Option data
      */
     public function saveOption(){
-        $data['pageTitle'] = "Admin | New Option";
+        $data['pageTitle'] = "Tumba-SCS | New Option";
         $data['pageName'] = "Register Option";
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -882,7 +1094,7 @@ class MainController extends BaseController
      */
     public function listDepartments()
     {
-        $data['pageTitle'] = "Admin | Departments";
+        $data['pageTitle'] = "Tumba-SCS | Departments";
         $data['pageName'] = "Registered Departments";
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -903,7 +1115,7 @@ class MainController extends BaseController
      */
     public function editDepartment($dpt_id)
     {
-        $data['pageTitle'] = "Admin | Department";
+        $data['pageTitle'] = "Tumba-SCS | Department";
         $data['pageName'] = "Edit Departments";
         $session = \Config\Services::session();
         $id = $session->get('userID');
@@ -923,7 +1135,7 @@ class MainController extends BaseController
      */
     public function updateDepartment()
     {
-        $data['pageTitle'] = "Admin | Department";
+        $data['pageTitle'] = "Tumba-SCS | Department";
         $data['pageName'] = "Update Department";
         $session = \Config\Services::session();
         $id = $session->get('userID');

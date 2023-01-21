@@ -29,7 +29,7 @@ class ScsDataSeeder extends Seeder
             'usr_role' => 1,
             'usr_firstname' => 'System',
             'usr_lastname' => 'Admin',
-            'usr_gender' => 'Male',
+            'usr_gender' => 'male',
             'usr_email' => 'byonkuru@gmail.com',
             'usr_phone' => '+250783821750',
             'usr_username' => 'admin',

@@ -189,7 +189,7 @@ $session = \Config\Services::session();
                                 <a href="<?= route_to('user.new');?>"> New User </a>
                             </li>
                             <li>
-                                <a href="{{ route('student.list') }}"> Manage Users </a>
+                                <a href="<?= route_to('user.list');?>"> Manage Users </a>
                             </li>
                         </ul>
                     </li>
