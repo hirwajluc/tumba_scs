@@ -71,6 +71,9 @@ $routes->group("admin", function($routes){
     //for User
     $routes->get('userNw', 'MainController::newUserForm', ['as' => 'user.new']);
     $routes->post('usrAdd', 'MainController::saveUser', ['as' => 'user.save']);
+    $routes->get('users', 'MainController::viewUsers', ['as' => 'user.list']);
+    $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
+    $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
 
     
 });
