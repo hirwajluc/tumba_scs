@@ -12,7 +12,7 @@ class Login extends BaseController
         return view('auths/login');
     }
     public function authenticate(){
-        $session = $session = \Config\Services::session();
+        $session = \Config\Services::session();
         helper(['form', 'url']);
         $error = $this->validate([
             'username' => 'required|min_length[3]|alpha_numeric_space',
@@ -25,12 +25,6 @@ class Login extends BaseController
             return view('auths/login', $data);
 
         } else{
-            // $crudModel = new CrudModel();
-            // $crudModel -> save([
-            //     'name' => $this->request->getVar('name'),
-            //     'email' => $this->request->getVar('email'),
-            //     'gender' => $this->request->getVar('gender')
-            // ]);
             $user  = new User();
             $username = $this->request->getPost('username');
             $password = $this->request->getPost('password');

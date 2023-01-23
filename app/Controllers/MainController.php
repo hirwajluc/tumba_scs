@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\Option;
 use App\Models\Role;
 use App\Models\Student;
+use App\Models\TempCard;
 use App\Models\Title;
 use App\Models\User;
 
@@ -29,6 +30,28 @@ class MainController extends BaseController
             $session->destroy();
             return view('auths/login');
         }
+    }
+
+    /**
+     * Function to generate Username from Firstname and Lastname
+     */
+    public function readCard($tag, $reader){
+        $crd = new TempCard();
+        $crd_data = [
+            'tcd_reader' => $reader,
+            'tcd_tag' => $tag
+        ];
+        $cardExists = $crd->where('tcd_reader', $reader)
+                            ->orWhere('tcd_tag', $tag)
+                            ->findAll();
+        if ($cardExists) {
+            $crd->where('tcd_reader', $reader)
+                ->orWhere('tcd_tag', $tag)
+                ->delete();
+        }
+        $crd->insert($crd_data);
+        http_response_code(301);
+        exit;
     }
 
     /**
@@ -142,14 +165,14 @@ class MainController extends BaseController
                 ];
                 $cards->update($cardId, $crd_data);
                 $session->setFlashdata('success', 'Card Desactivated Successfully');
-                return redirect()->to(base_url('/admin/stdInfo/'.$std_id));
+                return $this->response->redirect(route_to('student.info', $std_id));
             } elseif ($action == 1) {
                 $crd_data = [
                     'crd_status' => 'active'
                 ];
                 $cards->update($cardId, $crd_data);
                 $session->setFlashdata('success', 'Card Activated Successfully');
-                return redirect()->to(base_url('/admin/stdInfo/'.$std_id));
+                return $this->response->redirect(route_to('student.info', $std_id));
             } elseif ($action == 2) {
                 $acd_data = $acdy->where('acd_status','active')->first();
                 $crd_data = [
@@ -158,9 +181,43 @@ class MainController extends BaseController
                 ];
                 $cards->update($cardId, $crd_data);
                 $session->setFlashdata('success', 'Card Upgraded Successfully');
-                return redirect()->to(base_url('/admin/stdInfo/'.$std_id));
+                return $this->response->redirect(route_to('student.info', $std_id));
             }
             //return view('admin/cardNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to update a user account status
+     */
+    public function changeUserStatus($action, $usr_id)
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            //echo $action, $cardId, $std_id;
+            $data['pageTitle'] = "User status";
+            $data['pageName'] = "User status";
+            $user = new User();
+
+            if ($action == 0) {
+                $usr_data = [
+                    'usr_status' => 'not active'
+                ];
+                $user->update($usr_id, $usr_data);
+                $session->setFlashdata('success', 'Account Desactivated Successfully');
+                return $this->response->redirect(route_to('user.info', $usr_id));
+            } elseif ($action == 1) {
+                $usr_data = [
+                    'usr_status' => 'active'
+                ];
+                $user->update($usr_id, $usr_data);
+                $session->setFlashdata('success', 'Account is re-activated Successfully');
+                return $this->response->redirect(route_to('user.info', $usr_id));
+            }
         } else{
             $session->destroy();
             return view('auths/login');
@@ -229,7 +286,7 @@ class MainController extends BaseController
                 ];
                 $card->insert($crdData);
                 $session->setFlashdata('success', $this->request->getPost('card'));
-                return redirect()->to(base_url('/admin/stdCard'));
+                return $this->response->redirect(route_to('card.new'));
             }
             //return view('admin/cardNew', $data);
         } else{
@@ -301,6 +358,26 @@ class MainController extends BaseController
         }
     }
 
+    public function getUserInfo($usr_id)
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $usrId= $usr_id;
+            $user = new User();
+            $data['user'] = $user->where('usr_id', $usrId)
+                                        ->join('scs_roles','rol_id = usr_role')
+                                        ->join('scs_titles', 'tit_id = usr_title')
+                                        ->first();
+            $data['pageTitle'] = "Tumba-SCS | User";
+            $data['pageName'] = "User Info";
+            return view('admin/userInfo', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
     /**
      * Function to display new Department form
      */
@@ -346,7 +423,74 @@ class MainController extends BaseController
                 ];
                 $depart->insert($dptData);
                 $session->setFlashdata('success', $this->request->getPost('code'));
-                return redirect()->to(base_url('/admin/department'));
+                return $this->response->redirect(route_to('department.new'));
+            }
+            
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to save Option data
+     */
+    public function saveOption(){
+        $data['pageTitle'] = "Tumba-SCS | New Option";
+        $data['pageName'] = "Register Option";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $depart = new Department();
+            $data['dept'] = $depart->findAll();
+            $optn = new Option();
+            helper(['form', 'url']);
+            $rules = [
+                'department' => [
+                    'label' => 'Option Department',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'Please select department'
+                    ]
+                ],
+                'code' => [
+                    'label' => 'Option Code',
+                    'rules' => 'required|min_length[2]|alpha_numeric_space|is_unique[scs_options.opt_code]',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists'
+                    ]
+                ],
+                'name' => [
+                    'label' => 'Option Name',
+                    'rules' => 'required|min_length[4]|alpha_numeric_space|is_unique[scs_options.opt_name]',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists'
+                    ]
+                ]
+            ];
+            $validation = $this->validate($rules);
+            
+
+            if (!$validation) {
+                $data['error'] = $this->validator;
+                $data['department'] = $this->request->getVar('department');
+                $data['opt_code'] = $this->request->getVar('code');
+                $data['opt_name'] = $this->request->getVar('name');
+                return view('admin/optionNew', $data);
+            } else {
+                $datas = [
+                    'opt_department' => $this->request->getPost('department'),
+                    'opt_code' => $this->request->getPost('code'),
+                    'opt_name' => $this->request->getPost('name')
+                ];
+                $optn->insert($datas);
+                if ($optn->affectedRows() > 0) {
+                    $session->setFlashdata('success', $this->request->getPost('name'));
+                    return $this->response->redirect(route_to('option.new'));
+                } else{
+                    $session->setFlashdata('fail', 'Option not registered');
+                    return $this->response->redirect(route_to('option.new'));
+                }
             }
             
         } else{
@@ -386,7 +530,7 @@ class MainController extends BaseController
             $data['pageTitle'] = "Tumba-SCS | Student";
             $data['pageName'] = "Edit Student Info";
             if($std_id == 0):
-                return redirect()->to(base_url('/admin/allStd'));
+                return $this->response->redirect(route_to('student.list'));
             else:
                 helper(['form', 'url']);
                 $image = \Config\Services::image();
@@ -419,7 +563,7 @@ class MainController extends BaseController
             $data['pageTitle'] = "Tumba-SCS | User";
             $data['pageName'] = "Edit User Info";
             if($usr_id == 0):
-                return redirect()->to(base_url('/admin/users'));
+                return $this->response->redirect(route_to('user.list'));
             else:
                 helper(['form', 'url']);
                 $image = \Config\Services::image();
@@ -663,10 +807,10 @@ class MainController extends BaseController
                     mkdir($uploadPath, 0777, true);
                 }
 
-                $newName = 'user_'.$file->getRandomName();
+                $newName = 'user_'.time().'.'.$file->getExtension();
                 $username = $this->generate_username($this->request->getPost('firstname'), $this->request->getPost('lastname'));
                 $password = $this->randomPassword();
-                $stdData = [
+                $usrData = [
                     'usr_role' => $this->request->getPost('role'),
                     'usr_firstname' => $this->request->getPost('firstname'),
                     'usr_lastname' => $this->request->getPost('lastname'),
@@ -684,7 +828,7 @@ class MainController extends BaseController
                         ->fit(500,500, 'center')
                         ->save($uploadPath. $newName, 90)
                     ){
-                    $user->save($stdData);
+                    $user->save($usrData);
                     $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
                     $session->setFlashdata('success', $names);
         
@@ -841,8 +985,7 @@ class MainController extends BaseController
                         ){
                         $student->update($std_id, $stdData);
                         $session->setFlashdata('success', $names);
-            
-                        return redirect()->to(base_url('/admin/allStd'));
+                        return $this->response->redirect(route_to('student.list'));
                     } else{
                         $session->setFlashdata('fail', 'Edit failed, try again!');
             
@@ -853,7 +996,7 @@ class MainController extends BaseController
             } else {
                 $student->update($std_id, $stdData);
                 $session->setFlashdata('success', $names);
-                return redirect()->to(base_url('/admin/allStd'));
+                return $this->response->redirect(route_to('student.list'));
             }
             
              
@@ -948,33 +1091,36 @@ class MainController extends BaseController
             
             if (!$validation) {
                 $data['user_data'] = $userData;
+                $data ['usr_id'] = $this->request->getPost('usr_id');
                 $data ['errors'] = $this->validator;
-                $data ['std_id'] = $this->request->getPost('std_id');
-                $data ['firstname'] = $this->request->getPost('firstname');
-                $data ['lastname'] = $this->request->getPost('lastname');
-                $data ['regno'] = $this->request->getPost('regno');
-                $data ['email'] = $this->request->getPost('email');
-                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
-                $data ['department'] = $this->request->getPost('department');
-                $data ['option'] = $this->request->getPost('option');
-                $data ['level'] = $this->request->getPost('level');
+                $data ['title'] = $this->request->getPost('title');
+                $data ['role'] = $this->request->getPost('role');
                 $data ['gender'] = $this->request->getPost('gender');
+                $data ['firstname'] = $this->request->getPost('firstname');
+                $data ['email'] = $this->request->getPost('email');
+                $data ['username'] = $this->request->getPost('username');
+                $data ['lastname'] = $this->request->getPost('lastname');
+                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
+                $data ['password'] = $this->request->getPost('password');
                 //$session->setFlashdata('fail', 'Not Upladed');
-                return view('admin/studentEdit', $data);
+                return view('admin/userEdit', $data);
             }
     
             $file = $this->request->getFile('photo');
-            $stdData = [
-                'std_option' => $this->request->getPost('option'),
-                'std_regno' => $this->request->getPost('regno'),
-                'std_firstname' => $this->request->getPost('firstname'),
-                'std_lastname' => $this->request->getPost('lastname'),
-                'std_gender' => $this->request->getPost('gender'),
-                'std_level' => $this->request->getPost('level'),
-                'std_status' => 'active',
-                'std_email' => $this->request->getPost('email'),
-                'std_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'))
+            $usrData = [
+                'usr_role' => $this->request->getPost('role'),
+                    'usr_firstname' => $this->request->getPost('firstname'),
+                    'usr_lastname' => $this->request->getPost('lastname'),
+                    'usr_gender' => $this->request->getPost('gender'),
+                    'usr_email' => $this->request->getPost('email'),
+                    'usr_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone')),
+                    'usr_username' => $this->request->getPost('username'),
+                    'usr_title' => $this->request->getPost('title'),
+                    'usr_status' => 'active'
             ];
+            if ($this->request->getPost('password') == 1) {
+                $usrData['usr_password'] = $this->randomPassword();
+            }
             $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
 
             if (file_exists($this->request->getFile('photo')) != null) {
@@ -983,81 +1129,36 @@ class MainController extends BaseController
                 //$files  = new FileCollection();
                 //$files->removeFile(FCPATH .'uploads/students/'.$this->request->getPost('regno').'_profile.'.$file->getExtension());
                 
-                if (file_exists(FCPATH.$studentData->std_picture) != null) {
-                    unlink(FCPATH.$studentData->std_picture);
+                if (file_exists(FCPATH.$userData->usr_picture) != null) {
+                    unlink(FCPATH.$userData->usr_picture);
                 }
 
                 if (! $file->hasMoved()) {
-                    $uploadPath = FCPATH . 'uploads/students/';
+                    $uploadPath = FCPATH . 'uploads/users/';
     
-                    $newName = $this->request->getPost('regno').'_profile.'.$file->getExtension() ;
-                    $stdData['std_picture'] = 'uploads/students/'.$newName;
+                    $newName = 'user_'.time().'.'.$file->getExtension();
+                    $usrData['usr_picture'] = 'uploads/users/'.$newName;
                     
                     if($image->withFile($file)
                             ->fit(500,500, 'center')
                             ->save($uploadPath. $newName, 90)
                         ){
-                        $student->update($std_id, $stdData);
+                        $user->update($usr_id, $usrData);
                         $session->setFlashdata('success', $names);
-            
-                        return redirect()->to(base_url('/admin/allStd'));
+                        return $this->response->redirect(route_to('user.list'));
                     } else{
                         $session->setFlashdata('fail', 'Edit failed, try again!');
             
-                        return view('admin/studentEdit', $data);
+                        return view('admin/userEdit', $data);
                     }
-                    
                 }
             } else {
-                $student->update($std_id, $stdData);
+                $user->update($usr_id, $usrData);
                 $session->setFlashdata('success', $names);
-                return redirect()->to(base_url('/admin/allStd'));
+                return $this->response->redirect(route_to('user.list'));
             }
-            
-             
-    
-            
             $data = ['errors' => 'The file has already been moved.'];
-            return view('admin/studentEdit', $data);
-        } else{
-            $session->destroy();
-            return view('auths/login');
-        }
-    }
-
-    /**
-     * Function to save Option data
-     */
-    public function saveOption(){
-        $data['pageTitle'] = "Tumba-SCS | New Option";
-        $data['pageName'] = "Register Option";
-        $session = \Config\Services::session();
-        $id = $session->get('userID');
-        if ($id) {
-            $depart = new Department();
-            $data['dept'] = $depart->findAll();
-            $option = new Option();
-            helper(['form', 'url']);
-            $validation = $this->validate($option->validationRules);
-            
-
-            if (!$validation) {
-                $data['error'] = $this->validator;
-                $data['department'] = $this->request->getVar('department');
-                $data['opt_code'] = $this->request->getVar('code');
-                $data['opt_name'] = $this->request->getVar('name');
-                return view('admin/optionNew', $data);
-            } else {
-                $optData = [
-                    'opt_department' => $this->request->getPost('department'),
-                    'opt_code' => $this->request->getPost('code'),
-                    'opt_name' => $this->request->getPost('name')
-                ];
-                $option->insert($optData);
-                $session->setFlashdata('success', $this->request->getPost('code'));
-                return redirect()->to(base_url('/admin/option'));
-            }
-            
+            return view('admin/userEdit', $data);
         } else{
             $session->destroy();
             return view('auths/login');
@@ -1108,6 +1209,30 @@ class MainController extends BaseController
             return view('auths/login');
         }
         
+    }
+
+    /**
+     * Function to retrieve all department's options
+     */
+    public function listDepartmentOptions($dpt_id)
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $department = new Department();
+        $dpt_info = $department->where('dpt_id', $dpt_id)->first();
+        $option = new Option();
+
+        $data['pageTitle'] = "Tumba-SCS | Options";
+        $data['pageName'] = $dpt_info->dpt_code." Department | Option(s)";
+
+        if ($id) {
+            $data['departs'] = $department->where('dpt_id', $dpt_id)->first();
+            $data['opts'] = $option->where('opt_department', $dpt_id)->findAll();
+            return view('admin/optionList', $data);
+        } else {
+            $session->destroy();
+            return view('auths/login');
+        }
     }
 
     /**
@@ -1162,7 +1287,7 @@ class MainController extends BaseController
                 ];
                 $depart->update($dpt_id, $dptData);
                 $session->setFlashdata('success', $this->request->getPost('code'));
-                return redirect()->to(base_url('/admin/dptList'));
+                return $this->response->redirect(route_to('departmentList'));
             }
             
         } else{

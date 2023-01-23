@@ -21,61 +21,43 @@
                     <thead>
                         <tr>
                             <th>N<sup>o</sup></th>
-                            <th>Names</th>
-                            <th>Username</th>
-                            <th>Role</th>
+                            <th>Option Code</th>
+                            <th>Option Name</th>
                             <th>Registered On</th>
-                            <th>Status</th>
                             <th class="text-center dt-no-sorting">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if(isset($users)):
+                        if($departs):
+                            $dpt = $departs;
+                        endif;
+                        if($opts):
                             $x = 0;
-                            foreach($users as $usr):
-                                if($usr->usr_id != session()->get('userID')):
-                                    $x++;
-                                    ?>
-                                    <tr>
-                                        <td><?=$x;?></td>
-                                        <td>
-                                        <div class="d-flex">
-                                            <div class="usr-img-frame mr-2 rounded-circle">
-                                                <img alt="avatar" class="img-fluid rounded-circle" src="<?=($usr->usr_picture == null) ? 'assets/img/user_'.$usr->usr_gender.'_icon.png' : $usr->usr_picture;?>">
+                            foreach($opts as $opt):
+                                $x++;
+                                ?>
+                                <tr>
+                                    <td><?=$x;?></td>
+                                    <td><?=$opt->opt_code;?></td>
+                                    <td><?=$opt->opt_name;?></td>
+                                    <td><?=date('d-m-Y', strtotime($opt->opt_created_at));?></td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                                                <?php
+                                                ?>
+                                                <a class="dropdown-item" href="<?= route_to('option.info', $opt->opt_id); ?>">View</a>
+                                                <a class="dropdown-item" href="<?=route_to('option.edit', $opt->opt_id)?>">Edit</a>
+                                                <a class="dropdown-item warning confirm" href="#">Delete</a>
                                             </div>
-                                            <p class="align-self-center mb-0 admin-name">
-                                            <?=$usr->usr_firstname.' '.$usr->usr_lastname;?>
-                                            </p>
                                         </div>
-                                        </td>
-                                        <td><?=$usr->usr_username?></td>
-                                        <td><?=ucfirst($usr->rol_name);?></td>
-                                        <td><?=date('d-m-Y', strtotime($usr->usr_created_at));?></td>
-                                        <td>
-                                            <?php
-                                            if ($usr->usr_status == 'active'): ?>
-                                                <span class="text-success"><?= ucfirst($usr->usr_status);?></span>
-                                            <?php else:?>
-                                                <span class="text-danger"><?=ucfirst($usr->usr_status);?></span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="dropdown">
-                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                                </a>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                                    <?php
-                                                    ?>
-                                                    <a class="dropdown-item" href="<?= route_to('user.info', $usr->usr_id); ?>">View</a>
-                                                    <a class="dropdown-item" href="<?=route_to('user.edit', $usr->usr_id)?>">Edit</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                endif; 
+                                    </td>
+                                </tr>
+                                <?php
                             endforeach;
                         endif;
                         ?>
@@ -140,7 +122,7 @@ swal({
 
 <?php $session= \Config\Services::session();?>
 <?php if($session->getFlashdata('success')):?>
-    <script>
+            <script>
 
         const toast = swal.mixin({
             toast: true,
@@ -151,25 +133,9 @@ swal({
         });
         toast({
             type: 'success',
-            title: '<?=$session->getFlashdata('success').' is updated';?>',
+            title: '<?=$session->getFlashdata('success')?> department is successfully updated',
             padding: '1em',
         })
-    </script>
-<?php elseif($session->getFlashdata('fail')):?>
-    <script>
-
-        const toast2 = swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            padding: '2em'
-        });
-        toast2({
-            type: 'error',
-            title: '<?=$session->getFlashdata('fail')?>',
-            padding: '1em',
-        })
-    </script>
+            </script>
 <?php endif;?>
 <?= $this->endSection();?>

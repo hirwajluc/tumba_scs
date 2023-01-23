@@ -134,5 +134,20 @@
             padding: '1em',
         })
             </script>
+<?php elseif($session->getFlashdata('fail')):?>
+    <script>
+        const toast1 = swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            padding: '2em'
+        });
+        toast1({
+            type: 'error',
+            title: '<?=$session->getFlashdata('fail')?>',
+            padding: '1em',
+        })
+    </script>
 <?php endif;?>
 <?= $this->endSection();?>

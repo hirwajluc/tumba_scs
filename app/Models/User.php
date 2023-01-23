@@ -39,4 +39,18 @@ class User extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    //function to get card tag number
+    public function getCardNumber($user_id)
+    {
+        $reader = new Reader();
+        $card = new TempCard();
+        $reader_data = $reader->where('rdr_user', $user_id)->first();
+        $card_data = $card->where('tcd_reader', $reader_data->rdr_id)->first();
+        if($card_data):
+            return $card_data->tcd_tag;
+        else:
+            return 'Tap Card to get number...';
+        endif;
+    }
 }

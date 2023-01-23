@@ -7,18 +7,21 @@
 <!-- END PAGE LEVEL STYLES -->
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
         <script>
-            // $(document).ready(function () {
+            $(document).ready(function () {
 
-            //     setInterval( function() {
-            //         $("#number").load(location.href + " #number");
-            //     }, 500);
+                setInterval( function() {
+                    $("#number").load(location.href + " #number");
+                }, 500);
 
-            // });
+            });
         </script>
 <?= $this->endSection();?>
 <!--  BEGIN CONTENT PART  -->
 <?= $this->section('content');?>
 <?php
+
+use App\Models\User;
+
     $validation = \Config\Services::validation();
 ?> 
 <div class="layout-px-spacing">
@@ -111,15 +114,12 @@
                                     
                                     
                                     <div class="col-sm-6" id="number">
-                                        <label for="company-email" class="col-form-label col-form-label-sm">Card Number  (<b class="text-warning">Tap card</b>)</label>
+                                        <label for="company-email" class="col-form-label col-form-label-sm" style="min-width: 250px;">Card Number  (<b class="text-warning">Tap Card</b>)</label>
                                         <?php
-                                            // $result = App\Models\NewCard::all()->first();
-                                            // $value="";
-                                            // if ($result) {
-                                            //     $value =$result->card_no;
-                                            // }
+                                            $user = new User();
+                                            $value = $user->getCardNumber(session()->get('userID'));
                                         ?>
-                                        <input type="text" name="card" required class="form-control form-control-sm" value="<?php //=$value?>" id="company-name" placeholder="Tap Card to get number">
+                                        <input type="text" name="card" required class="form-control form-control-sm" value="<?= $value;?>" id="company-name" placeholder="Tap Card to get number" style="min-width: 250px;">
                                         <?php if($validation->getError('card')): ?>
                                             <span>
                                                 <strong class="text-danger">
@@ -128,7 +128,7 @@
                                             </span>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="col-sm-6" id="number">
+                                    <div class="col-sm-6">
                                         <label for="company-email" class="col-form-label col-form-label-sm">Academic Year</label>
                                         <?php
                                             // $result = App\Models\NewCard::all()->first();
