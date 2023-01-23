@@ -21,10 +21,15 @@ class MainController extends BaseController
     {
         $session = \Config\Services::session();
         $id = $session->get('userID');
+        $role = $session->get('role');
         if ($id) {
             $data['pageTitle'] = "Tumba-SCS | Home";
             $data['pageName'] = "DashBoard";
-            return view('admin/home', $data);
+            if ($role==1) {
+                return view('admin/home', $data);
+            }elseif ($role==2){
+                return view('academin/home', $data);
+            }
         } else{
             $session->destroy();
             return view('auths/login');

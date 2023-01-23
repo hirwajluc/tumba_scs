@@ -78,6 +78,12 @@ $routes->group("admin", function($routes){
     
 });
 
+$routes->group("academic", function($routes){
+    //Dashboard
+    $routes->add('home', 'AcademicController::index', ['as' => 'academic.home']);
+
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

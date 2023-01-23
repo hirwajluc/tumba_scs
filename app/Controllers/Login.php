@@ -45,11 +45,16 @@ class Login extends BaseController
                         'userID' => $userData->usr_id,
                         'role' => $userData->usr_role,
                         'firstname' => $userData->usr_firstname,
-                        'lastname' => $userData->usr_lastname
+                        'lastname' => $userData->usr_lastname,
+                        'logged_in' => TRUE
                     ];
                     $session->set($session_data);
                     $session -> setFlashdata('success', 'Logged in Successfully');
-                    return $this->response->redirect(route_to('admin.home'));
+                    if($userData->usr_role==1) {
+                        return $this->response->redirect(route_to('admin.home'));
+                    }elseif ($userData->usr_role==2){
+                        return $this->response->redirect(route_to('academic.home'));
+                    }
                 } else {
                     $session -> setFlashdata('fail', 'Your account is '.$userData->usr_status. ', contact System Admin for support');
                     return $this->response->redirect(route_to('login'));
