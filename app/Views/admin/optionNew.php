@@ -43,7 +43,7 @@
                                                     if(isset($department)):
                                                         if($depts->dpt_id == $department):
                                                             ?>
-                                                            <option value="<?=$depts->dpt_id;?>" selected><?=$depts->dpt_name;?></option>
+                                                            <option value="<?=$depts->dpt_id;?>" selected><?= $depts->dpt_name;?></option>
                                                             <?php
                                                         else:
                                                             ?>

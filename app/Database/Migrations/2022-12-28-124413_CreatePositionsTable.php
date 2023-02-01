@@ -11,9 +11,10 @@ class CreatePositionsTable extends Migration
         $this->db->query("
             CREATE TABLE `scs_positions` (
                 `pst_id` INT NOT NULL AUTO_INCREMENT,
-                `pst_name` INT NOT NULL UNIQUE,
-                `pst_created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL UNIQUE,
-                `pst_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL UNIQUE,
+                `pst_name` VARCHAR(255) NOT NULL UNIQUE,
+                `pst_desc` VARCHAR(255) NOT NULL,
+                `pst_created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                `pst_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (`pst_id`)
             );
         ");

@@ -25,6 +25,11 @@ $session = \Config\Services::session();
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="plugins/select2/select2.min.css">
+    <!--  END CUSTOM STYLE FILE  -->
+
     <style>
         .layout-px-spacing {
             min-height: calc(100vh - 166px)!important;
@@ -150,6 +155,27 @@ $session = \Config\Services::session();
                             </li>
                         </ul>
                     </li>
+<!--                     <li class="menu">
+                        <a href="#staff_depart" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="brown" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                <span>Staff Depart.</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="staff_depart" data-parent="#accordionExample">
+
+                            <li>
+                                <a href=""> New Department </a>
+                                
+                            </li>
+                            <li>
+                                <a href="{{ route('student.list') }}"> Manage Department </a>
+                            </li>
+                        </ul>
+                    </li> -->
 
                     <li class="menu">
                         <a href="#staff" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -162,17 +188,43 @@ $session = \Config\Services::session();
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="staff" data-parent="#accordionExample">
+
                             <li>
-                                <a href="{{ route('student.new') }}"> New Staff </a>
+                                <a href="<?=route_to('staff.new');?>"> New Staff </a>
+                                
                             </li>
                             <li>
-                                <a href="{{ route('student.list') }}"> Manage Staffs </a>
+                            <a href="<?=route_to('staff.list');?>"> Manage Staffs </a>
+                              
                             </li>
                             <li>
                                 <a href="{{ route('card.new') }}"> Staff Cards </a>
+                                <div style = "border-top:1px dashed grey; margin-left:50px;"> </div>
+                            </li>
+<!--                             <li class="menu">
+                             <a href="#staff_depart" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="brown" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                <span>Staff Depart.</span>
+                            </div> 
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </div>
+                        </a>-->
+                        <!-- <ul class="collapse submenu list-unstyled" id="staff_depart" data-parent="#accordionExample"> -->
+
+                            <li>
+                                <a href="<?=route_to('staffDepartment.new');?>"> New Depart./Unit </a>
+                                
+                            </li>
+                            <li>
+                                <a href="<?=route_to('stfDepartmentList.list');?>"> Manage Depart./Unit </a>
                             </li>
                         </ul>
                     </li>
+
+               <!--  </ul> -->
+                    
 
                     <li class="menu">
                         <a href="#user" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -192,6 +244,7 @@ $session = \Config\Services::session();
                                 <a href="<?= route_to('user.list');?>"> Manage Users </a>
                             </li>
                         </ul>
+                        
                     </li>
 
                     <li class="menu">
@@ -206,7 +259,9 @@ $session = \Config\Services::session();
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="department" data-parent="#accordionExample">
-                            <li>
+                            
+                        
+                        <li>
                                 <a href="<?=route_to('department.new');?>"> New Department </a>
                             </li>
                             <li>
@@ -274,5 +329,15 @@ $session = \Config\Services::session();
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <?= $this->renderSection('page_scripts');?>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+
+    <script src="plugins/highlight/highlight.pack.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+    <script src="assets/js/scrollspyNav.js"></script>
+    <script src="plugins/select2/select2.min.js"></script>
+    <script src="plugins/select2/custom-select2.js"></script>
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
 </body>
 </html>
