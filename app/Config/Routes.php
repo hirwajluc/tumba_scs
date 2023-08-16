@@ -62,6 +62,7 @@ $routes->group("admin", function($routes){
     $routes->get('dptEdit/(:num)', 'MainController::editDepartment/$1', ['as' => 'department.edit']);
     $routes->get('dptList', 'MainController::listDepartments', ['as' => 'departmentList']);
     $routes->post('dptUpd', 'MainController::updateDepartment', ['as' => 'department.update']);
+    $routes->get('dptOpts/(:num)', 'MainController::listDepartmentOptions/$1', ['as' => 'department.info']);
     
     //For Option
     $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
@@ -74,8 +75,14 @@ $routes->group("admin", function($routes){
     $routes->get('users', 'MainController::viewUsers', ['as' => 'user.list']);
     $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
     $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
-
+    $routes->get('usrInfo/(:num)', 'MainController::getUserInfo/$1', ['as' => 'user.info']);
+    $routes->get('stdCardSt/(:num)/(:num)', 'MainController::changeUserStatus/$1/$2', ['as' => 'user.status']);
     
+    
+});
+
+$routes->group('main', function($routes){
+    $routes->get('readCard/(:any)/(:num)', 'MainController::readCard/$1/$2', ['as' => 'card.read']); 
 });
 
 /*

@@ -104,7 +104,7 @@ if (isset($student)) {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="email">Ation</label><br>
+                                        <label for="email">Action: </label>
                                         <?php if($crd_status == 'Active'):?>
                                             <a href="<?=route_to('card.update',0, $card_data->crd_id, $std->std_id);?>" class="btn btn-danger desactivate confirm">Desactivate card</a>
                                         <?php elseif($crd_status == 'Expired'):?>
@@ -112,9 +112,12 @@ if (isset($student)) {
                                         <?php elseif($crd_status == 'Not active'):?>
                                             <a href="<?=route_to('card.update',1, $card_data->crd_id, $std->std_id);?>" class="btn btn-info activate confirm">Re-Activate card</a>
                                         <?php else:?>
-                                            <a href="<?=route_to('card.new');?>" class="btn btn-success">Assign card</a>
+                                            <a href="<?=route_to('card.new');?>" class="btn btn-success">Assign New Card</a>
                                         <?php endif;?>
                                     </div>
+                                </div>
+                                <div class="col-md-6 text-right mb-5">
+                                    <a href="<?=route_to('student.list');?>" class="btn btn-primary align-right"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg> Back to list</a>
                                 </div>
                             </div>
                         </div>

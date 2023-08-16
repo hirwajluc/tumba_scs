@@ -65,7 +65,7 @@
                                 <div class="form-group row">
                                     <label for="company-email" class="col-sm-7 col-form-label col-form-label-sm">Email</label>
                                     <div class="col-sm-12">
-                                        <input type="text" value="<?= (isset($email)) ? $email : ''; ?>" name="email" class="form-control form-control-sm" id="email" placeholder="test@example.com">
+                                        <input type="text" value="<?= (isset($email)) ? $email : ''; ?>" name="email" class="form-control form-control-sm" id="user_email" placeholder="test@example.com">
 
                                         <?php if($validation->getError('email')): ?>
                                             <span>
@@ -275,9 +275,9 @@
     <script>
     // Email
 
-    $("#email").inputmask(
+    $("#user_email").inputmask(
         {
-            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]",
+            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[*{2,6}][*{1,2}].*{1,20}[",
             greedy:!1,onBeforePaste:function(m,a){return(m=m.toLowerCase()).replace("mailto:","")},
             definitions:{"*":
                 {

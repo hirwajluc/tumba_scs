@@ -4,23 +4,23 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class Option extends Model
+class TempCard extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'scs_options';
-    protected $primaryKey       = 'opt_id';
+    protected $table            = 'scs_temp_cards';
+    protected $primaryKey       = 'tcd_id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['opt_department', 'opt_code', 'opt_name', 'opt_created_at', 'opt_updated_at'];
+    protected $allowedFields    = ['tcd_reader', 'tcd_tag', 'tcd_created_at', 'tcd_updated_at'];
 
     // Dates
     protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'opt_created_at';
-    protected $updatedField  = 'opt_updated_at';
+    protected $createdField  = 'tcd_created_at';
+    protected $updatedField  = 'tcd_updated_at';
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -39,4 +39,5 @@ class Option extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
 }
