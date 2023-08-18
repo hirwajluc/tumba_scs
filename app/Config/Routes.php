@@ -40,10 +40,10 @@ $routes->get('/login', 'Login::index', ['as' => 'login']);
 $routes->get('/logout', 'Logout::index', ['as' => 'logout']);
 $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 
-$routes->group("admin", function($routes){
+$routes->group("sys", function($routes){
     //Dashboard
-    $routes->add('home', 'MainController::index', ['as' => 'admin.home']);
-
+    $routes->get('home', 'MainController::index', ['as' => 'admin.home']);
+    
     //For Student
     $routes->get('student', 'MainController::newStudentForm', ['as' => 'student.new']);
     $routes->post('stdAdd', 'MainController::saveStudent', ['as' => 'student.save']);
@@ -76,13 +76,24 @@ $routes->group("admin", function($routes){
     $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
     $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
     $routes->get('usrInfo/(:num)', 'MainController::getUserInfo/$1', ['as' => 'user.info']);
-    $routes->get('stdCardSt/(:num)/(:num)', 'MainController::changeUserStatus/$1/$2', ['as' => 'user.status']);
+    $routes->get('usrSt/(:num)/(:num)', 'MainController::changeUserStatus/$1/$2', ['as' => 'user.status']);
     
     
 });
 
+/**
+ * Routes for the gate user
+ */
+$routes->group('gt', function($routes){
+    $routes->get('/', 'GateController::index', ['as' => 'gate.home']);
+    $routes->get('mklog', 'GateController::logStudents', ['as' => 'gate.log']);
+});
+
+/**
+ * Routes for general activities
+ */
 $routes->group('main', function($routes){
-    $routes->get('readCard/(:any)/(:num)', 'MainController::readCard/$1/$2', ['as' => 'card.read']); 
+    $routes->get('readCard/(:any)/(:num)/(:any)', 'MainController::readCard/$1/$2/$3', ['as' => 'card.read']); 
 });
 
 /*

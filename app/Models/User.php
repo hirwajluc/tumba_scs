@@ -46,11 +46,18 @@ class User extends Model
         $reader = new Reader();
         $card = new TempCard();
         $reader_data = $reader->where('rdr_user', $user_id)->first();
-        $card_data = $card->where('tcd_reader', $reader_data->rdr_id)->first();
-        if($card_data):
-            return $card_data->tcd_tag;
+        if ($reader_data):
+            # code...
+            $card_data = $card->where('tcd_reader', $reader_data->rdr_id)->first();
+            if($card_data):
+                return $card_data->tcd_tag;
+            else:
+                return 'Tap Card to get number...';
+            endif;
         else:
-            return 'Tap Card to get number...';
+            # code...
+            return 'No Card Reader Found!';
         endif;
+        
     }
 }
