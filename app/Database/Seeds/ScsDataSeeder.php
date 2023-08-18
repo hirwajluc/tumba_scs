@@ -27,11 +27,11 @@ class ScsDataSeeder extends Seeder
                 'rol_rank' => 4
             ],
             [
-                'rol_name' => 'security Officer',
+                'rol_name' => 'Security Officer',
                 'rol_rank' => 5
             ],
             [
-                'rol_name' => 'gate quard',
+                'rol_name' => 'Gate guard',
                 'rol_rank' => 6
             ]
         ];

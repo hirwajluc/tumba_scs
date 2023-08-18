@@ -53,7 +53,7 @@ $session = \Config\Services::session();
                     </a>
                 </li>
                 <li class="nav-item theme-text">
-                    <a href="index.html" class="nav-link">IPRC TUMBA | SCS </a>
+                    <a href="<?=route_to('admin.home');?>" class="nav-link">IPRC TUMBA | SCS </a>
                 </li>
             </ul>
 

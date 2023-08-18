@@ -17,8 +17,8 @@ if (isset($student)) {
                       ->first();
     $crd_status = ($card_data != null) ? ucfirst($card_data->crd_status): 'No card';
     $crd_number = ($card_data != null) ? $card_data->crd_tag_code : 'N/A';
-    $crd_created_at = ($card_data != null) ? date('d-m-Y',strtotime($card_data->crd_created_at)) : 'N/A';
-    $last_date = ($card_data != null) ? date('d-m-Y',$card_data->acd_ended_at) : 'N/A';
+    $crd_created_at = ($card_data != null) ? date('d-M-Y',strtotime($card_data->crd_created_at)) : 'N/A';
+    $last_date = ($card_data != null) ? date('d-M-Y',strtotime($card_data->acd_ended_at)) : 'N/A';
     $acd_year = ($card_data != null) ? $card_data->acd_year : 'N/A';
 }
 ?>

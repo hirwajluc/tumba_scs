@@ -31,6 +31,7 @@ class Login extends BaseController
 
             $userData = $user->where('usr_username', $username)
                 ->where('usr_password', $password)
+                ->join('scs_roles', 'rol_id = usr_role')
                 ->first();
             
             if($userData){
@@ -43,7 +44,19 @@ class Login extends BaseController
                     ];
                     $session->set($session_data);
                     $session -> setFlashdata('success', 'Logged in Successfully');
-                    return $this->response->redirect(route_to('admin.home'));
+                    if($userData->rol_rank == 1):
+                        return $this->response->redirect(route_to('admin.home'));
+                    elseif($userData->rol_rank == 2):
+                        return $this->response->redirect(route_to('academic.home'));
+                    elseif($userData->rol_rank == 3):
+                        return $this->response->redirect(route_to('acaduser.home'));
+                    elseif($userData->rol_rank == 4):
+                        return $this->response->redirect(route_to('hr.home'));
+                    elseif($userData->rol_rank == 5):
+                        return $this->response->redirect(route_to('secofficer.home'));
+                    elseif($userData->rol_rank == 6):
+                        return $this->response->redirect(route_to('gate.home'));
+                    endif;
                 } else {
                     $session -> setFlashdata('fail', 'Your account is '.$userData->usr_status. ', contact System Admin for support');
                     return $this->response->redirect(route_to('login'));
