@@ -82,6 +82,14 @@ $routes->group("sys", function($routes){
 });
 
 /**
+ * Routes for Delegated Academic User.
+ */
+$routes->group("3", function($routes){
+    //Dashboard
+    $routes->get('/', 'AcademicOther::index', ['as' => 'acaduser.home']);
+});
+
+/**
  * Routes for the gate user
  */
 $routes->group('gt', function($routes){
