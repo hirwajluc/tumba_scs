@@ -38,7 +38,7 @@ class Login extends BaseController
                 if ($userData->usr_status == 'active') {
                     $session_data = [
                         'userID' => $userData->usr_id,
-                        'role' => $userData->usr_role,
+                        'role' => $userData->rol_rank,
                         'firstname' => $userData->usr_firstname,
                         'lastname' => $userData->usr_lastname
                     ];

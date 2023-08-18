@@ -40,7 +40,7 @@ $routes->get('/login', 'Login::index', ['as' => 'login']);
 $routes->get('/logout', 'Logout::index', ['as' => 'logout']);
 $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 
-$routes->group("admin", function($routes){
+$routes->group("sys", function($routes){
     //Dashboard
     $routes->get('home', 'MainController::index', ['as' => 'admin.home']);
     
