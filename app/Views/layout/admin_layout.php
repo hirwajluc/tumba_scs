@@ -111,7 +111,12 @@ $session = \Config\Services::session();
                 <div class="shadow-bottom"></div>
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
-                    <?php if($userData->rol_rank == 1):?>
+                    <?php 
+                    $session = \Config\Services::session();
+                    $id = $session->get('userID');
+                    $role = $session->get('role');
+                    if($role == 1):
+                    ?>
                         <!-- Menu for System Administrator -->
                         <li class="menu">
                             <a href="<?=route_to('admin.home');;?>" aria-expanded="false" class="dropdown-toggle">
@@ -220,7 +225,7 @@ $session = \Config\Services::session();
                                 </div>
                             </a>
                         </li>
-                    <?php elseif($userData->rol_rank == 2):?>
+                    <?php elseif($role == 2):?>
                         <!-- Menu for Academic Director -->
                         <li class="menu">
                             <a href="<?=route_to('academic.home');;?>" aria-expanded="false" class="dropdown-toggle">
@@ -272,7 +277,7 @@ $session = \Config\Services::session();
                                 </li>
                             </ul>
                         </li>
-                    <?php elseif($userData->rol_rank == 3):?>
+                    <?php elseif($role == 3):?>
                         <!-- Menu for Academic User (Other) -->
                         <li class="menu">
                             <a href="<?=route_to('acaduser.home');;?>" aria-expanded="false" class="dropdown-toggle">
@@ -305,11 +310,11 @@ $session = \Config\Services::session();
                                 </li>
                             </ul>
                         </li>
-                    <?php elseif($userData->rol_rank == 4):?>
+                    <?php elseif($role == 4):?>
                         <!-- Menu for Human Resources -->
-                    <?php elseif($userData->rol_rank == 5):?>
+                    <?php elseif($role == 5):?>
                         <!-- Menu for Security Officer -->
-                    <?php elseif($userData->rol_rank == 6):?>
+                    <?php elseif($role == 6):?>
                         <!-- Menu for Gate Officer -->
                     <?php endif;?>
                 </ul>
