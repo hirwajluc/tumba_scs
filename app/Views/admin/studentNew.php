@@ -394,7 +394,7 @@
 
             // AJAX request
             $.ajax({
-                url:"<?php echo base_url('/admin/optionJson'); ?>",
+                url:"<?=route_to('option.json');?>",
                 method:"POST",
                 data:{id:id},
                 dataType:"JSON",

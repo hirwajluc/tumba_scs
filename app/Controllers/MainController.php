@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\AcadYear;
 use App\Models\Card;
 use App\Models\Department;
+use App\Models\Log;
 use App\Models\Option;
 use App\Models\Reader;
 use App\Models\Role;
@@ -40,12 +41,67 @@ class MainController extends BaseController
         //$session = \Config\Services::session();
         $id = $this->session->get('userID');
         if ($id) {
-            $data['pageTitle'] = "Tumba-SCS | Home";
-            $data['pageName'] = "DashBoard";
-            return view('admin/home', $data);
+            $card = new Card();
+            $student = new Student();
+            $log = new Log();
+
+            $data['cards_data'] = $card->findAll();
+            $data['students_data'] = $student->findAll();
+            $data['logsData'] = $log -> join('scs_cards', 'log_card = crd_id')
+                    ->where('log_created_at BETWEEN ' . "'" . date('Y-m-d 00:00:00') . "'" . ' AND ' . "'" . date('Y-m-d  23:59:59') . "'")
+                    ->findAll();
+            if(session()->get('role') == 1){
+                $data['pageTitle'] = "Tumba-SCS | Home";
+                $data['pageName'] = "Admin";
+                return view('admin/home', $data);
+            }elseif (session()->get('role') == 2) {
+                # code...
+            }elseif (session()->get('role') == 3) {
+                $data['pageTitle'] = "Tumba-SCS | Home";
+                $data['pageName'] = "Academics";
+                return view('admin/home', $data);
+            }elseif (session()->get('role') == 4) {
+                # code...
+            }elseif (session()->get('role') == 5) {
+                $data['pageTitle'] = "Tumba-SCS | Home";
+                $data['pageName'] = "Security Officer";
+                return view('admin/home', $data);
+            }elseif (session()->get('role') == 6) {
+                $data['pageTitle'] = "Tumba-SCS | Gate";
+                $data['pageName'] = "Gate | DashBoard";
+                return view('gate/home', $data);
+            }
         } else{
             $this->session->destroy();
             return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to send Credentials Email
+     */
+    public static function sendUserCredentialsEmail( $username, $password, $toMail = 'yuoblaise@gmail.com', $name = 'User' ) {
+        //Sending Email
+        $email = \Config\Services::email();
+        $message = '
+            <p>Dear '.$name.',</p>
+            <p></p>
+            <p>Here is your login credentials on IPRC Tumba SmartCards system.</p>
+            <p></p>
+            <p>Username: '.$username.'</p>
+            <p>Password: '.$password.'</p>
+            <p></p>
+            <p>Best regards,</p>
+        ';
+
+        $email->setFrom('byonkuru@gmail.com', 'Y. Blaise');
+        $email->setTo($toMail);
+        $email->setSubject('Tumba SCS Login Credentials');
+        $email->setMessage($message);
+        if ($email->send()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -104,7 +160,7 @@ class MainController extends BaseController
         $lnacronym = "";
     
         foreach ($lnwords as $w) {
-          $lnacronym .= strtolower(substr($w, 0, 1));
+            $lnacronym .= strtolower(substr($w, 0, 1));
         }
         //echo $lnacronym;
         $fnnew = str_replace(['\'', ' '], '',strtolower(strval($firstname)));
@@ -177,6 +233,25 @@ class MainController extends BaseController
             $acdy = new AcadYear();
             $data['acadYear'] = $acdy->findAll();
             return view('admin/cardNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+
+    /**
+     * Function to display a card swap form
+     */
+    public function swapCardForm($regno='')
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Tumba-SCS | New Card";
+            $data['pageName'] = "Student Card";
+            $acdy = new AcadYear();
+            $data['acadYear'] = $acdy->findAll();
+            return view('admin/cardSwap', $data);
         } else{
             $session->destroy();
             return view('auths/login');
@@ -293,7 +368,7 @@ class MainController extends BaseController
                     'rules' => 'required|is_unique[scs_cards.crd_student]',
                     'errors' => [
                         'is_unique' => 'This {field} owns a card, swap it if lost.',
-                        'required' => 'The {field} identification is required.'
+                        'required' => 'The {field} identification is incorrect.'
                     ]
                 ],
                 'card' => [
@@ -312,7 +387,7 @@ class MainController extends BaseController
 
             if (!$error) {
                 $data['error'] = $this->validator;
-                $data['id'] = $this->request->getVar('id');
+                //$data['id'] = $this->request->getVar('id');
                 $data['regno'] = $this->request->getVar('regno');
                 $data['card'] = $this->request->getVar('card');
                 $data['ac_year'] = $this->request->getVar('ac_year');
@@ -335,6 +410,84 @@ class MainController extends BaseController
                         ->delete();
                 $session->setFlashdata('success', $this->request->getPost('card'));
                 return $this->response->redirect(route_to('card.new'));
+            }
+            //return view('admin/cardNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    
+    }
+    /**
+     * Function to swap student card data
+     */
+    public function swapStudentCard()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $data['pageTitle'] = "Saving Card...";
+            $data['pageName'] = "Student Card";
+
+            $card = new Card();
+            $acdy = new AcadYear();
+            $tmpCard = new TempCard();
+            $reader = new Reader();
+            $data['acadYear'] = $acdy->findAll();
+            helper(['form', 'url']);
+            $rules = [
+                'regno' => [
+                    'label' => 'Registration Number',
+                    'rules' => 'required'
+                ],
+                'id' => [
+                    'label' => 'Student',
+                    'rules' => 'required|is_not_unique[scs_cards.crd_student]',
+                    'errors' => [
+                        'is_not_unique' => 'This {field} does not have a card.',
+                        'required' => 'The {field} identification is incorrect.'
+                    ]
+                ],
+                'card' => [
+                    'label' => 'Card Number',
+                    'rules' => 'required|is_unique[scs_cards.crd_tag_code]',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists'
+                    ]
+                ],
+                'ac_year' => [
+                    'label' => 'Academic Year',
+                    'rules' => 'required'
+                ]
+            ];
+            $error = $this->validate($rules);
+
+            if (!$error) {
+                $data['error'] = $this->validator;
+                //$data['id'] = $this->request->getVar('id');
+                $data['regno'] = $this->request->getVar('regno');
+                $data['card'] = $this->request->getVar('card');
+                $data['ac_year'] = $this->request->getVar('ac_year');
+                return view('/admin/cardSwap', $data);
+            } else {
+                $acd_status = $acdy->where('acd_id', $this->request->getPost('ac_year'))
+                                ->first()
+                                ->acd_status;
+                $crd_status = ($acd_status == 'active') ? $acd_status : 'expired';
+                $crdSwapData = [
+                    'crd_tag_code' => $this->request->getPost('card'),
+                    'crd_acad_year' => $this->request->getPost('ac_year'),
+                    'crd_status' => $crd_status
+                ];
+                //$cardData = $card->where('crd_student', $this->request->getPost('id'))->first();
+                //$card->where('crd_student', $this->request->getPost('id'));
+                $card->update(['crd_student' => $this->request->getPost('id')], $crdSwapData);
+                $readerData = $reader->where('rdr_user', session()->get('userID'))
+                            ->first();
+                $tmpCard->where('tcd_reader', $readerData->rdr_id)
+                        ->delete();
+                $session->setFlashdata('success', $this->request->getPost('card'));
+                return $this->response->redirect(route_to('card.swap'));
             }
             //return view('admin/cardNew', $data);
         } else{
@@ -370,11 +523,21 @@ class MainController extends BaseController
     {
         $session = \Config\Services::session();
         $id = $session->get('userID');
+        $role = $session->get('role');
         if ($id) {
             $user = new User();
-            $data['users'] = $user->join('scs_roles', 'rol_id = usr_role')
-                                ->join('scs_titles', 'tit_id = usr_title')
-                                ->findAll();
+            if ($role == 1) {
+                # code...
+                $data['users'] = $user->join('scs_roles', 'rol_id = usr_role')
+                                    ->join('scs_titles', 'tit_id = usr_title')
+                                    ->findAll();
+            } elseif ($role == 5) {
+                # code...
+                $data['users'] = $user->join('scs_roles', 'rol_id = usr_role')
+                                    ->join('scs_titles', 'tit_id = usr_title')
+                                    ->where('rol_rank', 6)
+                                    ->findAll();
+            }
             $data['pageTitle'] = "Tumba-SCS | View Users";
             $data['pageName'] = "Users List";
             return view('admin/userView', $data);
@@ -843,7 +1006,7 @@ class MainController extends BaseController
             }
     
             $file = $this->request->getFile('photo');
-             
+            
     
             if ($file->hasMoved() == null) {
                 $uploadPath = FCPATH . 'uploads/users/';
@@ -875,11 +1038,23 @@ class MainController extends BaseController
                         ->fit(500,500, 'center')
                         ->save($uploadPath. $newName, 90)
                     ){
-                    $user->save($usrData);
-                    $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
-                    $session->setFlashdata('success', $names);
+                    
+                    //Sending Email to the user
+                    $userEmail = $this->request->getPost('email');
+                    $userFname = $this->request->getPost('firstname');
+                    $mailSent = $this->sendUserCredentialsEmail($username, $password, $userEmail, $userFname);
+
+                    if ($mailSent) {
+                        $user->save($usrData);
+                        $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
+                        $session->setFlashdata('success', $names);
+                        return view('admin/userNew', $data);
+                    } else {
+                        $session->setFlashdata('fail', 'User Not Registered, try again!');
+                        return view('admin/userNew', $data);
+                    }
+                    
         
-                    return view('admin/userNew', $data);
                 } else{
                     $session->setFlashdata('fail', 'Registration failed, try again!');
         
@@ -892,7 +1067,7 @@ class MainController extends BaseController
             $data = ['errors' => 'The file has already been moved.'];
     
             //return view('upload_form', $data);
-            return view('admin/userNew', $data);
+            //return view('admin/userNew', $data);
         } else{
             $session->destroy();
             return view('auths/login');
@@ -1070,9 +1245,10 @@ class MainController extends BaseController
             $data['titles'] = $tit_data->findAll();
             $usr_id = $this->request->getPost('usr_id');
             $userData = $user->where('usr_id', $usr_id)
-                                    ->join('scs_roles','rol_id = usr_role')
-                                    ->join('scs_titles', 'tit_id = usr_title')
-                                    ->first();
+                            ->join('scs_roles','rol_id = usr_role')
+                            ->join('scs_titles', 'tit_id = usr_title')
+                            ->first();
+            $data['user_data'] = $userData;
             $rules = [
                 'firstname' => [
                     'label' => 'User Firstname',
@@ -1124,7 +1300,6 @@ class MainController extends BaseController
             $validation = $this->validate($rules);
 
             if (!$validation) {
-                $data['user_data'] = $userData;
                 $data ['usr_id'] = $this->request->getPost('usr_id');
                 $data ['errors'] = $this->validator;
                 $data ['title'] = $this->request->getPost('title');
@@ -1156,6 +1331,9 @@ class MainController extends BaseController
                 $usrData['usr_password'] = $this->randomPassword();
             }
             $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
+            $username = $this->request->getPost('username');
+            $password = ($this->request->getPost('password') == 1)?$this->randomPassword():'Not Changed';
+            $userEmail = $this->request->getPost('email');
 
             if (file_exists($this->request->getFile('photo')) != null) {
                 
@@ -1175,22 +1353,40 @@ class MainController extends BaseController
                             ->fit(500,500, 'center')
                             ->save($uploadPath. $newName, 90)
                         ){
-                        $user->update($usr_id, $usrData);
-                        $session->setFlashdata('success', $names);
-                        return $this->response->redirect(route_to('user.list'));
+                        //Send Email and Update Data
+                        if($password == 1 || $username != $userData->usr_username){
+                            $mailSent = $this->sendUserCredentialsEmail($username, $password, $userEmail, $names);
+                            if ($mailSent) {
+                                $user->update($usr_id, $usrData);
+                                $session->setFlashdata('success', $names);
+                                return $this->response->redirect(route_to('user.list'));
+                            } else {
+                                $session->setFlashdata('fail', 'Not updated, try again!');
+                                return $this->response->redirect(route_to('user.list'));
+                            }  
+                        }
                     } else{
                         $session->setFlashdata('fail', 'Edit failed, try again!');
             
-                        return view('admin/userEdit', $data);
+                        return $this->response->redirect(route_to('user.list'));
                     }
                 }
             } else {
-                $user->update($usr_id, $usrData);
-                $session->setFlashdata('success', $names);
-                return $this->response->redirect(route_to('user.list'));
+                //Send Email and Update Data
+                if($password == 1 || $username != $userData->usr_username){
+                    $mailSent = $this->sendUserCredentialsEmail($username, $password, $userEmail, $names);
+                    if ($mailSent) {
+                        $user->update($usr_id, $usrData);
+                        $session->setFlashdata('success', $names);
+                        return $this->response->redirect(route_to('user.list'));
+                    } else {
+                        $session->setFlashdata('fail', 'Not updated, try again!');
+                        return $this->response->redirect(route_to('user.list'));
+                    }  
+                }
             }
             $data = ['errors' => 'The file has already been moved.'];
-            return view('admin/userEdit', $data);
+            return $this->response->redirect(route_to('user.list'));
         } else{
             $session->destroy();
             return view('auths/login');

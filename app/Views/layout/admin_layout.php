@@ -111,13 +111,13 @@ $session = \Config\Services::session();
                 <div class="shadow-bottom"></div>
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
+                    <!-- Menu for System Administrator -->
                     <?php 
                     $session = \Config\Services::session();
                     $id = $session->get('userID');
                     $role = $session->get('role');
                     if($role == 1):
                     ?>
-                        <!-- Menu for System Administrator -->
                         <li class="menu">
                             <a href="<?=route_to('admin.home');;?>" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
@@ -218,15 +218,28 @@ $session = \Config\Services::session();
                         </li>
                         
                         <li class="menu">
-                            <a href="{{route('logs.report')}}" aria-expanded="false" class="dropdown-toggle">
+                            <a href="#logs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                                     <span>Logs Report</span>
                                 </div>
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </div>
                             </a>
+                            <ul class="collapse submenu list-unstyled" id="logs" data-parent="#accordionExample">
+                                <li>
+                                    <a href="<?=route_to('student.logs');?>"> Students Logs </a>
+                                </li>
+                                <li>
+                                    <a href="<?=route_to('student.list');?>"> Staff Logs </a>
+                                </li>
+                            </ul>
                         </li>
-                    <?php elseif($role == 2):?>
+                        
+                        
                         <!-- Menu for Academic Director -->
+                    <?php elseif($role == 2):?>
                         <li class="menu">
                             <a href="<?=route_to('academic.home');;?>" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
@@ -277,8 +290,10 @@ $session = \Config\Services::session();
                                 </li>
                             </ul>
                         </li>
-                    <?php elseif($role == 3):?>
+                        
+                        
                         <!-- Menu for Academic User (Other) -->
+                    <?php elseif($role == 3):?>
                         <li class="menu">
                             <a href="<?=route_to('acaduser.home');;?>" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
@@ -310,12 +325,91 @@ $session = \Config\Services::session();
                                 </li>
                             </ul>
                         </li>
-                    <?php elseif($role == 4):?>
+                        
                         <!-- Menu for Human Resources -->
+                    <?php elseif($role == 4):?>
+
+
+                    <!-- Menu for Security Officer -->
                     <?php elseif($role == 5):?>
-                        <!-- Menu for Security Officer -->
+                        <li class="menu">
+                            <a href="<?=route_to('admin.home');;?>" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                    <span>Dashboard</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="menu">
+                            <a href="#user" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="yellow" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    <span>Gate Users</span>
+                                </div>
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </div>
+                            </a>
+                            <ul class="collapse submenu list-unstyled" id="user" data-parent="#accordionExample">
+                                <li>
+                                    <a href="<?= route_to('user.new');?>"> New User </a>
+                                </li>
+                                <li>
+                                    <a href="<?= route_to('user.list');?>"> Manage Users </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="menu">
+                            <a href="#logs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                    <span>Logs Report</span>
+                                </div>
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </div>
+                            </a>
+                            <ul class="collapse submenu list-unstyled" id="logs" data-parent="#accordionExample">
+                                <li>
+                                    <a href="<?=route_to('student.logs');?>"> Students Logs </a>
+                                </li>
+                                <li>
+                                    <a href="<?=route_to('student.list');?>"> Staff Logs </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                    <!-- Menu for Gate Officer -->
                     <?php elseif($role == 6):?>
-                        <!-- Menu for Gate Officer -->
+                        <li class="menu">
+                            <a href="<?=route_to('gate.home');?>" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                    <span>Dashboard</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="menu">
+                            <a href="<?= route_to('gate.log');?>" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                    <span>Cards Page</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="menu">
+                            <a href="<?=route_to('logout');?>" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                    <span>Logout</span>
+                                </div>
+                            </a>
+                        </li>
                     <?php endif;?>
                 </ul>
                 

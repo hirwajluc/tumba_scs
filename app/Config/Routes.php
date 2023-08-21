@@ -52,7 +52,9 @@ $routes->group("sys", function($routes){
     $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
     $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
     $routes->get('stdCard', 'MainController::newCardForm', ['as' => 'card.new']);
+    $routes->get('stdCardswp', 'MainController::swapCardForm', ['as' => 'card.swap']);
     $routes->post('stdCardOp', 'MainController::saveStudentCard', ['as' => 'card.save']);
+    $routes->post('ardSwapOp', 'MainController::swapStudentCard', ['as' => 'card.swaped']);
     $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
     $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
     
@@ -86,14 +88,24 @@ $routes->group("sys", function($routes){
  */
 $routes->group("3", function($routes){
     //Dashboard
-    $routes->get('/', 'AcademicOther::index', ['as' => 'acaduser.home']);
+    $routes->get('/', 'MainController::index', ['as' => 'acaduser.home']);
+});
+
+/**
+ * Routes for Security Officer
+ */
+$routes->group("5", function($routes){
+    //Dashboard
+    $routes->get('/', 'MainController::index', ['as' => 'secofficer.home']);
+    $routes->get('stdLogs', 'SecOfficer::viewStudentsGateLogs', ['as' => 'student.logs']);
+    $routes->post('stdLogFlt', 'SecOfficer::filterStudentLogs', ['as' => 'stdlg.filter']);
 });
 
 /**
  * Routes for the gate user
  */
 $routes->group('gt', function($routes){
-    $routes->get('/', 'GateController::index', ['as' => 'gate.home']);
+    $routes->get('/', 'MainController::index', ['as' => 'gate.home']);
     $routes->get('mklog', 'GateController::logStudents', ['as' => 'gate.log']);
 });
 

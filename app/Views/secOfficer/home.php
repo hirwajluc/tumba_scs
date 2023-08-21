@@ -1,84 +1,3 @@
-<?php
-
-use App\Models\Log;
-use Carbon\Carbon;
-
-$logObj = new Log();
-$mandayIn=0;
-$mandayOut=0;
-
-$tuesdayIn=0;
-$tuesdayOut=0;
-
-$wednesdayIn=0;
-$wednesdayOut=0;
-
-$thursdayIn=0;
-$thursdayOut=0;
-
-$fridayIn=0;
-$fridayOut=0;
-
-$saturdayIn=0;
-$saturdayOut=0;
-
-$sundayIn=0;
-$sundayOut=0;
-
-$allLogs = $logObj ->where('log_created_at BETWEEN ' . "'" . Carbon::now()->startOfWeek() . "'" . ' AND ' . "'" . Carbon::now()->endOfWeek() . "'")
-                    ->findAll();
-foreach ($allLogs as $lg) {
-    $d = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($lg->log_created_at)))->format('l');
-    if ($d == "Monday" && $lg->log_status == 'in') {
-        $mandayIn+=1;
-    }
-    if ($d == "Monday" && $lg->log_status == 'out') {
-        $mandayOut+=1;
-    }
-
-    if ($d == "Tuesday" && $lg->log_status == 'in') {
-        $tuesdayIn+=1;
-    }
-    if ($d == "Tuesday" && $lg->log_status == 'out') {
-        $tuesdayOut+=1;
-    }
-
-    if ($d == "Wednesday" && $lg->log_status == 'in') {
-        $wednesdayIn+=1;
-    }
-    if ($d == "Wednesday" && $lg->log_status == 'out') {
-        $wednesdayOut+=1;
-    }
-
-    if ($d == "Thursday" && $lg->log_status == 'in') {
-        $thursdayIn+=1;
-    }
-    if ($d == "Thursday" && $lg->log_status == 'out') {
-        $thursdayOut+=1;
-    }
-
-    if ($d == "Friday" && $lg->log_status == 'in') {
-        $fridayIn+=1;
-    }
-    if ($d == "Friday" && $lg->log_status == 'out') {
-        $fridayOut+=1;
-    }
-
-    if ($d == "Saturday" && $lg->log_status == 'in') {
-        $saturdayIn+=1;
-    }
-    if ($d == "Saturday" && $lg->log_status == 'out') {
-        $saturdayOut+=1;
-    }
-
-    if ($d == "Sunday" && $lg->log_status == 'in') {
-        $sundayIn+=1;
-    }
-    if ($d == "Sunday" && $lg->log_status == 'out') {
-        $sundayOut+=1;
-    }
-}
-?>
 <?= $this->extend('layout/admin_layout');?>
 <?= $this->section('page_css');?>
     <link href="assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
@@ -97,24 +16,11 @@ foreach ($allLogs as $lg) {
 
                     </div>
                     <div class="w-chart">
-                        <?php
-                        $staffCards = 0;
-                        $studentsCards = 0;
-                        if (isset($cards_data)){
-                            foreach ($cards_data as $crd) {
-                                if ($crd->crd_staff != null && $crd->crd_status == 'active') {
-                                    $staffCards++;
-                                } elseif ($crd->crd_student != null && $crd->crd_status == 'active') {
-                                    $studentsCards++;
-                                }
-                            }
-                        }
-                        ?>
 
                         <div class="w-chart-section total-visits-content">
                             <div class="w-detail">
                                 <p class="w-title">Staff Cards</p>
-                                <p class="w-stats"><?=$staffCards;?></p>
+                                <p class="w-stats">30</p>
                             </div>
                         </div>
 
@@ -122,7 +28,7 @@ foreach ($allLogs as $lg) {
                         <div class="w-chart-section paid-visits-content">
                             <div class="w-detail">
                                 <p class="w-title">Students Cards</p>
-                                <p class="w-stats"><?=$studentsCards;?></p>
+                                <p class="w-stats">445</p>
                             </div>
                         </div>
 
@@ -130,9 +36,50 @@ foreach ($allLogs as $lg) {
                 </div>
             </div>
 
-            <!-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                
-            </div> -->
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-card-four">
+                    <div class="widget-content">
+                        <div class="w-header">
+                            <div class="w-info">
+                                <h6 class="value">Staffs</h6>
+                            </div>
+                            <div class="task-action">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" role="button" id="pendingTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pendingTask" style="will-change: transform;">
+                                        <a class="dropdown-item" href="javascript:void(0);">Add Staff</a>
+                                        <a class="dropdown-item" href="javascript:void(0);">View List</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-content">
+
+                            <div class="w-info">
+                                <p class="value">50 <span>This Month</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></p>
+                            </div>
+                            
+                        </div>
+
+                        <div class="w-progress-stats">                                            
+                            <div class="progress">
+                                <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="">
+                                <div class="w-icon">
+                                    <p>75%</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-account-invoice-two">
@@ -143,21 +90,16 @@ foreach ($allLogs as $lg) {
                                     <h5 class="">Total Students</h5>
                                 </div>
                                 <div class="inv-balance-info">
-                                    <?php
-                                    $studentsCount = 0;
-                                    if (isset($students_data)) {
-                                        $studentsCount += count($students_data);
-                                    }
-                                    ?>
-                                    <p class="inv-balance"><?=$studentsCount;?></p>
+
+                                    <p class="inv-balance">15</p>
 
                                 </div>
                             </div>
                             <div class="acc-action">
                                 <div class="">
-                                    <a href="<?=(session()->get('role') == 1 || session()->get('role') == 2 || session()->get('role') == 3)?route_to('student.new'):'';?>"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
+                                    <a href="<?=route_to('student.new');?>"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
                                 </div>
-                                <a href="<?=(session()->get('role') == 1 || session()->get('role') == 2 || session()->get('role') == 3)?route_to('student.list'):'';?>">View</a>
+                                <a href="<?=route_to('student.list');?>">View</a>
                             </div>
                         </div>
                     </div>
@@ -273,13 +215,13 @@ foreach ($allLogs as $lg) {
     },
     series: [{
         name: 'Logged In',
-        data: [<?=$mandayIn;?>,<?=$tuesdayIn;?>,<?=$wednesdayIn;?>,<?=$thursdayIn;?>,<?=$fridayIn;?>,<?=$saturdayIn;?>,<?=$sundayIn;?>]
+        data: [15,11,7,35,40,20,20]
     }, {
         name: 'Logged out',
-        data: [<?=$mandayOut;?>,<?=$tuesdayOut;?>,<?=$wednesdayOut;?>,<?=$thursdayOut;?>,<?=$fridayOut;?>,<?=$saturdayOut;?>,<?=$sundayOut;?>]
+        data: [5,20,12,30,45,15,16]
     }],
     xaxis: {
-        categories: ['Manday','TuesDay','Wenesday','Thersday','Firday','Sturday','Sunday'],
+        categories: ['Manday','TuesDay','wenesday','Thersday','Firday','Sturday','Sunday'],
     },
     fill: {
       type: 'gradient',
@@ -303,20 +245,6 @@ foreach ($allLogs as $lg) {
   }
 
   //For Donut Chart
-  <?php
-  $staffLogs = 0;
-  $studentLogs = 0;
-
-  if (isset($logsData)) {
-    foreach ($logsData as $log) {
-        if ($log->crd_staff != null) {
-            $staffLogs++;
-        } elseif ($log->crd_student != null) {
-            $studentLogs++;
-        }
-    }
-  }
-  ?>
   var options = {
         chart: {
             type: 'donut',
@@ -382,7 +310,7 @@ foreach ($allLogs as $lg) {
           show: true,
           width: 25,
         },
-        series: [<?=$studentLogs;?>, <?=$staffLogs;?>],
+        series: [420, 65],
         labels: ['Students', 'Staffs'],
         responsive: [{
             breakpoint: 1599,
