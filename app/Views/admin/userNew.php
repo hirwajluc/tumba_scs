@@ -89,30 +89,41 @@
                                     
                                     <div class="col-sm-6">
                                         <label for="company-name" class="col-sm-7 col-form-label col-form-label-sm">User Role</label>
-                                        <select name="role" id="role" class="form-control form-control-sm">
-                                            <option disabled selected>-----Select Role-----</option>
-                                            <?php if (isset($roles)):?>
-                                                <?php foreach ($roles as $rol): ?>
-                                                    <?php
-                                                    if(isset($role)):
-                                                        if($rol->rol_id == $role):
-                                                            ?>
-                                                            <option value="<?=$rol->rol_id;?>" selected><?=ucfirst($rol->rol_name);?></option>
-                                                            <?php
+                                        <?php 
+                                        $session = \Config\Services::session();
+                                        $id = $session->get('userID');
+                                        $role = $session->get('role');
+                                        if($role == 1):
+                                        ?>
+                                            <select name="role" id="role" class="form-control form-control-sm">
+                                                <option disabled selected>-----Select Role-----</option>
+                                                <?php if (isset($roles)):?>
+                                                    <?php foreach ($roles as $rol): ?>
+                                                        <?php
+                                                        if(isset($role)):
+                                                            if($rol->rol_id == $role):
+                                                                ?>
+                                                                <option value="<?=$rol->rol_id;?>" selected><?=ucfirst($rol->rol_name);?></option>
+                                                                <?php
+                                                            else:
+                                                                ?>
+                                                                <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
+                                                                <?php
+                                                            endif;
                                                         else:
                                                             ?>
                                                             <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
                                                             <?php
                                                         endif;
-                                                    else:
                                                         ?>
-                                                        <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
-                                                        <?php
-                                                    endif;
-                                                    ?>
-                                                <?php endforeach; ?>
-                                            <?php endif;?>
-                                        </select>
+                                                    <?php endforeach; ?>
+                                                <?php endif;?>
+                                            </select>
+                                        <?php elseif($role == 5):?>
+                                            <select name="role" id="role" class="form-control form-control-sm">
+                                                <option value="6" selected>Gate Guard</option>
+                                            </select>
+                                        <?php endif;?>
 
                                         <?php if($validation->getError('role')): ?>
                                             <span>
