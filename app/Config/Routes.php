@@ -16,6 +16,7 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
  * Router Setup
  * --------------------------------------------------------------------
  */
+
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('MainController');
 $routes->setDefaultMethod('index');
@@ -43,6 +44,7 @@ $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 $routes->group("admin", function($routes){
     //Dashboard
     $routes->add('home', 'MainController::index', ['as' => 'admin.home']);
+    $routes->get('frmValidation', 'MainController::formValidation');
 
     //For Student
     $routes->get('student', 'MainController::newStudentForm', ['as' => 'student.new']);
@@ -56,50 +58,58 @@ $routes->group("admin", function($routes){
     $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
     $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
     
-    //For Staff
     
-    $routes->get('staff', 'MainController::newStaffForm', ['as' => 'staff.new']);
-    $routes->post('stfAdd', 'MainController::saveStaff', ['as' => 'staff.save']);
-    $routes->get('allStf', 'MainController::viewStaffs', ['as' => 'staff.list']);
+    
+        $routes->get('stdInfo/(:num)', 'MainController::getStudentInfo/$1', ['as' => 'student.info']);
+        $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
+        $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
+        $routes->get('stdCard', 'MainController::newCardForm', ['as' => 'card.new']);
+        $routes->post('stdCardOp', 'MainController::saveStudentCard', ['as' => 'card.save']);
+        $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
+        $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
+        
+        //For Staff
+        
+        $routes->get('stfNew', 'MainController::newStaffForm', ['as' => 'staff.new']);
+        $routes->post('stfsave', 'MainController::saveStaff', ['as' => 'staff.save']);
+        $routes->get('allStf', 'MainController::viewStaffs', ['as' => 'staff.list']);
+        $routes->get('stfEdit/(:num)', 'MainController::editStaff/$1', ['as' => 'staff.edit']);
+        $routes->post('stfUpd', 'MainController::updateStaff', ['as' => 'staff.update']);
+        
+        //For Department
+        $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
+        $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
+        $routes->get('dptList', 'MainController::listDepartments', ['as' => 'departmentList']);
+        $routes->post('dptUpd', 'MainController::updateDepartment', ['as' => 'department.update']);
+        $routes->get('dptEdit/(:num)', 'MainController::editDepartment/$1', ['as' => 'department.edit']);
+    
+        
+        
+        
+        //For Staff Department
+        $routes->get('staffDepartment', 'MainController::newStaffDepartmentForm', ['as' => 'staffDepartment.new']);
+        $routes->post('staffDptAdd', 'MainController::saveStaffDepartment', ['as' => 'staffDepartment.save']);
+        $routes->get('stfDptList', 'MainController::viewStfDepartments', ['as' => 'stfDepartmentList.list']);
+        $routes->get('sftDptEdit/(:num)', 'MainController::editStaffDepartment/$1', ['as' => 'stfDepartment.edit']);
+        $routes->post('stfDptUpd', 'MainController::updateStaffDepartment', ['as' => 'staffDepartment.update']);
+
+        //For Option
+        $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
+        $routes->post('optionJson', 'MainController::getOptionJson', ['as' => 'option.json']);
+        $routes->post('optAdd', 'MainController::saveOption', ['as' => 'option.save']);
+        
+        //for User
+        $routes->get('userNw', 'MainController::newUserForm', ['as' => 'user.new']);
+        $routes->post('usrAdd', 'MainController::saveUser', ['as' => 'user.save']);
+        $routes->get('users', 'MainController::viewUsers', ['as' => 'user.list']);
+        $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
+        $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
 
 
-
-    $routes->get('stdInfo/(:num)', 'MainController::getStudentInfo/$1', ['as' => 'student.info']);
-    $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
-    $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
-    $routes->get('stdCard', 'MainController::newCardForm', ['as' => 'card.new']);
-    $routes->post('stdCardOp', 'MainController::saveStudentCard', ['as' => 'card.save']);
-    $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
-    $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
     
-    //For Department
-    $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
-    $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
-    $routes->get('dptList', 'MainController::listDepartments', ['as' => 'departmentList']);
-    $routes->post('dptUpd', 'MainController::updateDepartment', ['as' => 'department.update']);
-    $routes->get('dptEdit/(:num)', 'MainController::editDepartment/$1', ['as' => 'department.edit']);
-    
-    
-    
-    //For Staff Department
-    $routes->get('staffDepartment', 'MainController::newStaffDepartmentForm', ['as' => 'staffDepartment.new']);
-    $routes->post('staffDptAdd', 'MainController::saveStaffDepartment', ['as' => 'staffDepartment.save']);
-    $routes->get('stfDptList', 'MainController::viewStfDepartments', ['as' => 'stfDepartmentList.list']);
-
-    //For Option
-    $routes->get('option', 'MainController::newOptionForm', ['as' => 'option.new']);
-    $routes->post('optionJson', 'MainController::getOptionJson', ['as' => 'option.json']);
-    $routes->post('optAdd', 'MainController::saveOption', ['as' => 'option.save']);
-    
-    //for User
-    $routes->get('userNw', 'MainController::newUserForm', ['as' => 'user.new']);
-    $routes->post('usrAdd', 'MainController::saveUser', ['as' => 'user.save']);
-    $routes->get('users', 'MainController::viewUsers', ['as' => 'user.list']);
-    $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
-    $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
-
     
 });
+
 
 /*
  * --------------------------------------------------------------------

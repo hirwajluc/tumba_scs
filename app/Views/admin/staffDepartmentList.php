@@ -54,9 +54,11 @@
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                                 <?php
                                                 ?>
-                                                <a class="dropdown-item" href="<?= route_to('staff.info', $staffDpt->sdp_id); ?>">View</a>
-                                                <a class="dropdown-item" href="<?=route_to('staff.edit', $staffDpt->sdp_id)?>">Edit</a>
+                                                <a class="dropdown-item" href="<?= route_to('staffDepartment.info', $staffDpt->sdp_id); ?>">View</a>
+                                                <a class="dropdown-item" href="<?=route_to('stfDepartment.edit', $staffDpt->sdp_id)?>">Edit</a>
+
                                                 <a class="dropdown-item warning confirm" href="#">Delete</a>
+                                                
                                             </div>
                                         </div>
                                     </td>

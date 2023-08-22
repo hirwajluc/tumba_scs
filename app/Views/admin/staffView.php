@@ -54,7 +54,7 @@
                                     </td>
                                     <td><?=$stf->sdp_name;?></td>
                                     <td><?=$stf->pst_name?></td>
-                                    <td><?=date('d-m-Y', strtotime($stf->stf_created_at));?></td>
+                                    <td><?=$stf->stf_created_at;?></td>
                                     <td>
                                         <?php
                                         $crd_status = $staffObj->cardStatus($stf->stf_id);

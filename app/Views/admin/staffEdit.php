@@ -20,97 +20,97 @@
             <div class="widget widget-chart-three">
                 <div class="widget-heading">
                     <div class="">
-                        <h5 class="">New Staff</h5>
+                        <h5 class="">Update Staff Info</h5>
                     </div>
                 </div>
-
-                <form action="<?=route_to('staff.save');?>" method="POST" enctype="multipart/form-data">
+                
+                <form action="<?=route_to('staff.update');?>" method="POST" enctype="multipart/form-data">
                     <div class="widget-content row">
                         <div class="col-xl-1"></div>
-
+                        
                         <div class="col-xl-5 invoice-address-company">
-
+                            
                             <div class="invoice-address-company-fields">
-
                                 
                                 <div class="form-group row">
                                     <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">Title</label>
                                     <div class="col-sm-12">
-                                        <select name = "title" class="form-control  basic">
-                                            <option disabled selected>--- Select Title ---</option>
+                                    <input type="hidden" name="stf_id" class="form-control form-control-sm" value="<?= (isset($stf_id)) ? $stf_id : $tit->short; ?>"" id="client-name" placeholder="First Name">
+                                    <select name = "title" class="form-control  basic">
+                                    <option value = "<?= (isset($stf_title)) ? $stf_title : $staffs->tit_id; ?>" selected ><?= (isset($stf_title)) ? $stf_title : $staffs->tit_short; ?></option>
 
-                                        <?php if (isset($tit)):?>
-                                            <?php foreach ($tit as $tit): ?>
+                                    <?php if (isset($tit)):?>
+                                                <?php foreach ($tit as $tits): ?>
                                                     <?php
                                                     if(isset($title)):
-                                                        if($tit->tit_id == $title):
+                                                        if($tits->tit_id == $title):
                                                             ?>
-                                                            <option value="<?=$tit->tit_id;?>"selected><?=$tit->tits_short;?></option>
+                                                            <option value="<?=$tit->tit_id;?>"selected><?=$tits->tit_short;?></option>
                                                             <?php
                                                         else:
                                                             ?>
-                                                            <option value="<?=$tit->tit_id;?>"><?=$tit->tit_short;?></option>
+                                                            <option value="<?=$tits->tit_id;?>"><?=$tits->tit_short;?></option>
                                                             <?php
                                                         endif;
                                                     else:
                                                         ?>
-                                                        <option value="<?=$tit->tit_id;?>"><?=$tit->tit_short;?></option>
+                                                        <option value="<?=$tits->tit_id;?>"><?=$tits->tit_short;?></option>
                                                         <?php
                                                     endif;
                                                     ?>
                                                 <?php endforeach; ?>
                                             <?php endif;?>
-                                        </select>
+                                    </select>
                                         <?php if($validation->getError('title')): ?>
                                             <span>
                                                 <strong class="text-danger">
                                                     <?=$validation->getError('title'); ?>
                                                 </strong>
                                             </span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <?php endif; ?>
                                     </div>
-                                    
-                                    <div class="form-group row">
-                                        <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">Gender</label>
-                                        <div class="col-sm-12">
-                                            <select name="gender" id="gender" class="form-control form-control-sm basic">
-                                                <?php
-                                                $genders = array('male' => 'Male', 'female' => 'Female');
-                                                ?>
-                                                <option selected disabled> --- Select Gender ---</option>
-                                                <?php foreach ($genders as $key => $name):
-                                                    if(isset($gender)):
-                                                        if($key == $gender):
-                                                            ?>
-                                                            <option value="<?=$key;?>" selected><?=$name;?></option>
-                                                            <?php
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">Gender</label>
+                                    <div class="col-sm-12">
+                                        <select name="gender" id="gender" class="form-control form-control-sm basic">
+                                            <?php
+                                            $genders = array('Male' => 'Male', 'Female' => 'Female');
+                                            ?>
+                                            <option value="<?= (isset($stf_gender)) ? $stf_gender : $staffs->stf_gender; ?>" selected><?= (isset($stf_gender)) ? $stf_gender : $staffs->stf_gender; ?></option>
+                                            <?php foreach ($genders as $key => $name):
+                                                if(isset($gender)):
+                                                    if($key == $gender):
+                                                        ?>
+                                                        <option value="<?=$key;?>" selected><?=$name;?></option>
+                                                        <?php
                                                         else:
                                                             ?>
                                                             <option value="<?=$key;?>"><?=$name;?></option>
-                                                            <?php
-                                                        endif;
-                                                    else:
-                                                        ?>
-                                                        <option value="<?=$key;?>"><?=$name;?></option>
                                                         <?php
                                                     endif;
-                                                endforeach; ?>
-                                            </select>
-                                            <?php if($validation->getError('gender')): ?>
-                                                <span>
-                                                    <strong class="text-danger">
-                                                        <?=$validation->getError('gender'); ?>
-                                                    </strong>
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
+                                                else:
+                                                    ?>
+                                                    <option value="<?=$key;?>"><?=$name;?></option>
+                                                    <?php
+                                                endif;
+                                            endforeach; ?>
+                                        </select>
+                                        <?php if($validation->getError('gender')): ?>
+                                            <span>
+                                                <strong class="text-danger">
+                                                    <?=$validation->getError('gender'); ?>
+                                                </strong>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
-                                    <div class="form-group row">
+                                </div>
+                                <div class="form-group row">
                             <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">First Name</label>
                             <div class="col-sm-12">
-                                <input type="text" name="firstname" class="form-control form-control-sm" value="<?= (isset($firstname)) ? $firstname : ''; ?>" id="client-name" placeholder="First Name">
-                                
+                                <input type="text" name="firstname" class="form-control form-control-sm" value="<?= (isset($stf_firstname)) ? $stf_firstname : $staffs->stf_firstname; ?>" id="client-name" placeholder="First Name">
+
                                 <?php if($validation->getError('firstname')): ?>
                                     <span>
                                         <strong class="text-danger">
@@ -123,10 +123,10 @@
 
                                 
 
-                        <div class="form-group row">
-                            <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">Last Name</label>
+                                <div class="form-group row">
+                                    <label for="client-name" class="col-sm-7 col-form-label col-form-label-sm">Last Name</label>
                                     <div class="col-sm-12">
-                                        <input type="text" name="lastname" class="form-control form-control-sm" value="<?= (isset($lastname)) ? $lastname : ''; ?>" id="client-name" placeholder="Last Name">
+                                        <input type="text" name="lastname" class="form-control form-control-sm" value="<?= (isset($stf_lastname)) ? $stf_lastname : $staffs->stf_lastname; ?>" id="client-name" placeholder="Last Name">
 
                                         <?php if($validation->getError('lastname')): ?>
                                             <span>
@@ -143,7 +143,7 @@
                                 <div class="form-group row">
                                     <label for="company-email" class="col-sm-7 col-form-label col-form-label-sm">Email</label>
                                     <div class="col-sm-12">
-                                        <input type="text" value="<?= (isset($email)) ? $email : ''; ?>" name="email" class="form-control form-control-sm" id="email" placeholder="test@example.com">
+                                        <input type="text" value = "<?= (isset($stf_emaail)) ? $stf_email : $staffs->stf_email; ?>" name="email" class="form-control form-control-sm" id="email" placeholder="test@example.com">
 
                                         <?php if($validation->getError('email')): ?>
                                             <span>
@@ -158,7 +158,7 @@
                                 <div class="form-group row">
                                     <label for="phone" class="col-sm-7 col-form-label col-form-label-sm">Phone</label>
                                     <div class="col-sm-12">
-                                        <input type="text" value="<?= (isset($phone)) ? $phone : ''; ?>" name="phone" class="form-control form-control-sm" id="ph-number" placeholder="(07X) XXX-XXXX">
+                                        <input type="text" value = "<?= (isset($stf_phone)) ? $stf_phone : $staffs->stf_phone; ?>" name="phone" class="form-control form-control-sm" id="ph-number" placeholder="(07X) XXX-XXXX">
 
                                         <?php if($validation->getError('phone')): ?>
                                             <span>
@@ -181,8 +181,8 @@
                                 <div class="form-group row">
                                     <label for="company-name" class="col-sm-7 col-form-label col-form-label-sm">Position</label>
                                     <div class="col-sm-12">
-                                        <select name = "position" class="form-control  basic ">
-                                        <option disabled selected>--- Select Position ---</option>
+                                        <select name = "position" class="form-control-sm  basic">
+                                        <option value ="<?= (isset($stf_position)) ? $stf_position : $staffs->pst_id; ?>" selected><?= (isset($pst_position)) ? $stf_position : $staffs->pst_name; ?></option>
 
                                             <?php if (isset($pst)):?>
                                                 <?php foreach ($pst as $psts): ?>
@@ -190,7 +190,7 @@
                                                     if(isset($position)):
                                                         if($psts->pst_id == $position):
                                                             ?>
-                                                            <option value="<?=$psts->pst_id;?>" selected><?=$psts->pst_name;?></option>
+                                                            <option value="<?=$psts->pst_id;?>"><?=$psts->pst_name;?></option>
                                                             <?php
                                                         else:
                                                             ?>
@@ -222,7 +222,7 @@
                                     <div class="col-sm-12">
                                         
                                         <select name="department" id="dept_sel" class="form-control form-control-sm basic">
-                                            <option disabled selected>--- Select Staff department/Unit ---</option>
+                                            <option value = "<?= (isset($stf_department)) ? $stf_department : $staffs->sdp_id; ?>" selected><?= (isset($stf_department)) ? $stf_department : $staffs->sdp_name; ?></option>
                                             
                                             <?php if (isset($stfDept)):?>
                                                 <?php foreach ($stfDept as $stfDepts): ?>
@@ -261,7 +261,7 @@
                             <div class="form-group row">
                                     <label for="company-email" class="col-sm-7 col-form-label col-form-label-sm">Employee ID</label>
                                     <div class="col-sm-12">
-                                        <input type="text" value="<?= (isset($stf_emp_id)) ? $stf_emp_id : ''; ?>" name="emp_id" class="form-control form-control-sm" id="company-name" placeholder="Employee ID">
+                                        <input type="text" value="<?= (isset($stf_emp_id)) ? $stf_emp_id : $staffs->stf_emp_id; ?>" name="emp_id" class="form-control form-control-sm" id="company-name" placeholder="Employee ID">
 
                                         <?php if($validation->getError('emp_id')): ?>
                                             <span>
@@ -288,18 +288,13 @@
                                 </div>
                                 <div class="widget-content widget-content-area">
                                     <div class="custom-file-container" data-upload-id="myFirstImage">
-                                        <?php if(isset($validation)) : ?>
-                                            <div class="text-danger">
-                                                <?= $validation->listErrors(); ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    <label>Select Staff's Photo <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">x</a></label>
-                                        <label class="custom-file-container__custom-file" >
-                                            <input type="file" name="photo" class="custom-file-container__custom-file__custom-file-input">
-                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                                            <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                        <label>Select Staff's Photo <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">x</a></label>
+                                        <label class="custom-file-container__custom-file" ><?= $staffs->stf_picture; ?>
+                                        <input type="file" id="input-file-max-fs" name="photo" class="dropify" accept="image/png, image/jpeg, image/jpg" data-default-file="<?=$staffs->stf_picture;?>" data-max-file-size="2M" />    
+                                        <input type="hidden" name="MAX_FILE_SIZE" id="input-file-max-fs" value = "<?= $staffs->stf_picture; ?>" name="photo" class="dropify" accept="image/png, image/jpeg, image/jpg" data-default-file="<?=$staffs->stf_picture;?>" data-max-file-size="2M">
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </label>
-                                        <div class="custom-file-container__image-preview"></div>
+                                        <div class = "custom-file-container__image-preview"></div>
 
                                         <?php if($validation->getError('photo')): ?>
                                             <span>
@@ -316,7 +311,7 @@
 
                         <div class="col-xl-4"></div>
                         <div class="col-xl-6">
-                        <button type="submit" class="btn btn-outline-primary mb-2">Submit Information</button>
+                        <button type="submit" class="btn btn-outline-primary mb-2">Update Information</button>
                         </div>
                     </div>
                 </form>

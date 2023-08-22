@@ -17,6 +17,7 @@ use App\Models\User;
 
 class MainController extends BaseController
 {
+    
     /**
      * The default function for the admin controller
      */
@@ -37,6 +38,7 @@ class MainController extends BaseController
     /**
      * Function to generate Username from Firstname and Lastname
      */
+    
     public function generate_username($firstname, $lastname){
         $lnwords = explode(" ", strval($lastname));
         $lnacronym = "";
@@ -89,7 +91,7 @@ class MainController extends BaseController
         if ($id) {
             $data['pageTitle'] = "Tumba-SCS | New Staff";
             $data['pageName'] = "Register Staff";
-            $data['tits'] = $tit_data->findAll();
+            $data['tit'] = $tit_data->findAll();
             $data['stfDept'] = $stfDpt_data->findAll();
             $data['pst'] = $pst_data->findAll();
             return view('admin/staffNew', $data);
@@ -289,7 +291,7 @@ class MainController extends BaseController
             $data['stfDepartments'] = $stfDepartments->findAll();
             $data['pageTitle'] = "Tumba-SCS | View Staff Departments";
             $data['pageName'] = "Staff Departments List";
-            return view('admin/staffDepartmentView', $data);
+            return view('admin/staffDepartmentList', $data);
         } else{
             $session->destroy();
             return view('auths/login');
@@ -530,6 +532,64 @@ class MainController extends BaseController
         }
     }
 
+
+ /*    public function editStaff($stf_id)
+    {
+        $data['pageTitle'] = "Tumba-SCS | Staff";
+        $data['pageName'] = "Edit Staff";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $staff = new Staff();
+
+        if ($id) {
+            
+            $data['staffs'] = $staff->where('stf_id', $stf_id);
+            return view('admin/staffEdit', $data);
+        } else {
+            $session->destroy();
+            return view('auths/login');
+        }
+    } */
+    /**
+     * Function to display staff edit form
+     */
+     public function editStaff($stf_id = 0){
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $stfDpt_data = new StaffDepartment();
+        $tit_data = new Title();
+        $pst_data = new position();
+        $staff_data = new Staff();
+        if ($id) {
+            $data['pageTitle'] = "Tumba-SCS | Staff";
+            $data['pageName'] = "Edit Staff Info";
+             if($stf_id == 0):
+                return redirect()->to(base_url('/admin/allStf'));
+            else: 
+                helper(['form', 'url']);
+                $image = \Config\Services::image();
+
+
+                $data['stfDept'] = $stfDpt_data->findAll();
+                $data['tit'] = $tit_data->findAll();
+                $data['pst'] = $pst_data->findAll();
+                $data['staffs'] = $staff_data->where('stf_id', $stf_id)
+                                        ->join('scs_positions','pst_id = stf_position')
+                                        ->join('scs_staff_departments', 'sdp_id = stf_department')
+                                        ->join('scs_titles', 'tit_id = stf_title')
+                                        ->first();
+                $data['stf_id'] = $stf_id;
+                
+                return view('admin/staffEdit', $data);
+             endif;             
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    } 
+
+
+    
     /**
      * Function to display User edit form
      */
@@ -723,77 +783,104 @@ class MainController extends BaseController
              $rules = [
                 
             ];
+
+           
+            
             $validation = $this->validate([
-                'stf_firstname' => [
+                'firstname' => [
                     'label' => 'Staff Firstname',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'The {field} should not be empty'
                     ]
-                ],
-                'stf_gender' => [
+               
+                 ],
+                'gender' => [
                     'label' => 'Gender',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'The {field} should not be empty'
                     ]
                 ],
-                'stf_email' => [
-                    'label' => 'Student Email',
+                'email' => [
+                    'label' => 'Staff Email',
                     'rules' => 'required|min_length[9]|is_unique[scs_staffs.stf_email]|valid_email',
                     'errors' => [
                         'is_unique' => 'The {field} already exists',
                         'required' => 'The {field} should not be empty'
                     ]
                 ],
-                'stf_phone' => [
+                'emp_id' => [
+                    'label' => 'Employee ID',
+                    'rules' => 'required|is_numeric',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty',
+                        'is_unique' => 'The {field} already exists',
+                    ]
+                ],
+                'phone' => [
                     'label' => 'Staff Phone',
-                    'rules' => 'required|min_length[10]\is_unique[scs_staffs.stf_phone]',
+                    'rules' => 'required|min_length[10]|is_unique[scs_staffs.stf_phone]',
                     'errors' => [
                         'is_unique' => 'The {field} already exists',
                         'min_length[10]' => 'Phone might be 10 digits',
                         'required' => 'The {field} should not be empty'
                     ]
                 ],
-                'stf_position' => [
+                'title' => [
+                    'label' => 'Staff Title',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'position' => [
                     'label' => 'Staff Position',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'The {field} should not be empty'
                     ]
                 ],
-
-                'stf_title' => [
-                    'label' => 'Staff Title',
-                    'rules' => 'required'
-                ],
-                'stf_emp_id' => [
-                    'label' => 'Employee ID',
-                    'rules' => 'required|is_numeric',
+                'department' => [
+                    'label' => 'Staff Department',
+                    'rules' => 'required',
                     'errors' => [
                         'required' => 'The {field} should not be empty'
                     ]
                 ],
+
                 'photo' => [
-                    'label' => 'Staff Phonto',
+                    'label' => 'Staff Photo',
                     'rules' => 'uploaded[photo]'
-                        . 'require|is_image[photo]'
+                        . '|is_image[photo]'
                         . '|mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                        . '|max_size[userfile,100]'
-                        . '|max_dims[userfile,1024,768]',
-                ]
-            ]); 
+                        . '|max_size[photo,4096]',
+ 
+                        'errors' => [
+                            'uploaded[photo]' => 'No {field} photo selected',
+                            
+                           'is_image[photo]' => 'It is not an image file',  
+                            'max_size[photo,4096]' => 'The select file is larger thn 4096kb',
+                            'mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]' => 'The selected file is not an',
+                            'max_dims[photo,1024,768]' => 'The file is larger than required one',
+                        ]
+                ],
+                
+            ]);
+            
+            
             if (!$validation) {
                 $data ['errors'] = $this->validator;
-                $data ['firstname'] = $this->request->getPost('stf_firstname');
-                $data ['lastname'] = $this->request->getPost('stf_lastname');
-                $data ['emp_id'] = $this->request->getPost('stf_emp_id');
-                $data ['email'] = $this->request->getPost('stf_email');
-                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('stf_phone'));
-                $data ['title'] = $this->request->getPost('stf_title');
-                $data ['position'] = $this->request->getPost('stf_positon');
-                $data ['stf_picture'] = $this->request->getPost('stf_picture');
-                $data ['gender'] = $this->request->getPost('stf_gender');
+                $data ['firstname'] = $this->request->getPost('firstname');
+                $data ['lastname'] = $this->request->getPost('lastname');
+                $data ['gender'] = $this->request->getPost('gender');
+                $data ['email'] = $this->request->getPost('email');
+                $data ['emp_id'] = $this->request->getPost('emp_id');
+                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
+                $data ['title'] = $this->request->getPost('title');
+                $data ['position'] = $this->request->getPost('positon');
+                $data ['department'] = $this->request->getPost('department');
+                $data ['photo'] = $this->request->getPost('photo');
                 $session->setFlashdata('fail', 'Not Upladed');
                 return view('admin/StaffNew', $data);
             } 
@@ -802,7 +889,7 @@ class MainController extends BaseController
              
     
             if ($file->hasMoved() == null) {
-                $uploadPath = FCPATH . 'uploads/staffs/';
+                $uploadPath = FCPATH . 'uploads/staff/';
 
                 // Make sure the upload directory exists
                 if (! is_dir($uploadPath))
@@ -810,16 +897,16 @@ class MainController extends BaseController
                     mkdir($uploadPath, 0777, true);
                 }
 
-                $newName = $this->request->getPost('stf_emp_id').'_profile.'.$file->getExtension() ;
-                $stdData = [
-                    'stf_title' => $this->request->getPost('stf_title'),
+                $newName = $this->request->getPost('emp_id').'_profile.'.$file->getExtension() ;
+                $stfData = [
+                    'stf_title' => $this->request->getPost('title'),
                     'stf_firstname' => $this->request->getPost('firstname'),
                     'stf_lastname' => $this->request->getPost('lastname'),
                     'stf_gender' => $this->request->getPost('gender'),
                     'stf_email' => $this->request->getPost('email'),
-                    'stf_department' => $this->request->getPost('stf_department'),
-                    'stf_position' => $this->request->getPost('stf_position'),
-                    'stf_emp_id' => $this->request->getPost('stf_emp_id'),
+                    'stf_department' => $this->request->getPost('department'),
+                    'stf_position' => $this->request->getPost('position'),
+                    'stf_emp_id' => $this->request->getPost('emp_id'),
                     'stf_status' => 'Active',
                     'stf_picture' => 'uploads/staff/'.$newName,
                     'stf_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'))
@@ -829,14 +916,15 @@ class MainController extends BaseController
                         ->fit(500,500, 'center')
                         ->save($uploadPath. $newName, 90)
                     ){
-                    $staff->save($stdData);
+                    $staff->save($stfData);
                     $names = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
                     $session->setFlashdata('success', $names);
         
-                    return view('admin/staffNew', $data);
+                    //return view('admin/staffView', $data);
+                    return redirect()->to(base_url('/admin/allStd'));
                 } else{
                     $session->setFlashdata('fail', 'Registration failed, try again!');
-        
+                    
                     return view('admin/staffNew', $data);
                 }
     
@@ -847,6 +935,186 @@ class MainController extends BaseController
     
             //return view('upload_form', $data);
             return view('admin/staffNew', $data);
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+    /**
+     * Function to Update Staff data
+     */
+    public function UpdateStaff()
+    {
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $stf_data = new Staff();
+        $staff = new Staff();
+        if ($id) {
+            $stf_id = $this->request->getPost('stf_id');
+            $data['pageTitle'] = "Tumba-SCS | Updating Staff";
+            $data['pageName'] = "Update Staff";
+            helper(['form', 'url']);
+            $image = \Config\Services::image();
+            $data['staff'] = $stf_data->findAll();
+
+             $rules = [
+                
+            ];
+
+           
+            
+            $validation = $this->validate([
+                'firstname' => [
+                    'label' => 'Staff Firstname',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+               
+                 ],
+                'gender' => [
+                    'label' => 'Gender',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'email' => [
+                    'label' => 'Staff Email',
+                    'rules' => 'required|min_length[9]|is_unique[scs_staffs.stf_email, stf_id, {stf_id}]',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists',
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'emp_id' => [
+                    'label' => 'Employee ID',
+                    'rules' => 'required|is_numeric',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty',
+                        'is_unique' => 'The {field} already exists',
+                    ]
+                ],
+                'phone' => [
+                    'label' => 'Staff Phone',
+                    'rules' => 'required|min_length[10]|is_unique[scs_staffs.stf_phone]',
+                    'errors' => [
+                        'is_unique' => 'The {field} already exists',
+                        'min_length[10]' => 'Phone might be 10 digits',
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'title' => [
+                    'label' => 'Staff Title',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'position' => [
+                    'label' => 'Staff Position',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+                'department' => [
+                    'label' => 'Staff Department',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'The {field} should not be empty'
+                    ]
+                ],
+
+                'photo' => [
+                    'label' => 'Staff Photo',
+                    'rules' => 'uploaded[photo]'
+                        . '|is_image[photo]'
+                        . '|mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                        . '|max_size[photo,4096]',
+ 
+                        'errors' => [
+                            'require' => 'No {field} photo selected',
+                            
+                           'is_image[photo]' => 'It is not an image file',  
+                            'max_size[photo,4096]' => 'The select file is larger thn 4096kb',
+                            'mime_in[photo,image/jpg,image/jpeg,image/gif,image/png,image/webp]' => 'The selected file is not an',
+                            'max_dims[photo,1024,768]' => 'The file is larger than required one',
+                        ]
+                ],
+                
+            ]);
+            
+            
+            if (!$validation) {
+                $data ['errors'] = $this->validator;
+                $data ['firstname'] = $this->request->getPost('firstname');
+                $data ['lastname'] = $this->request->getPost('lastname');
+                $data ['gender'] = $this->request->getPost('gender');
+                $data ['email'] = $this->request->getPost('email');
+                $data ['emp_id'] = $this->request->getPost('emp_id');
+                $data ['phone'] = str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'));
+                $data ['title'] = $this->request->getPost('title');
+                $data ['position'] = $this->request->getPost('positon');
+                $data ['department'] = $this->request->getPost('department');
+                $data ['photo'] = $this->request->getPost('photo');
+                $session->setFlashdata('fail', 'Not Upladed');
+                //return view('admin/StaffEdit', $data);
+            } 
+            
+            $file = $this->request->getFile('photo');
+            
+            
+            if ($file->hasMoved() == null) {
+                $uploadPath = FCPATH . 'uploads/staff/';
+                
+                // Make sure the upload directory exists
+                if (! is_dir($uploadPath))
+                {
+                    mkdir($uploadPath, 0777, true);
+                }
+                
+                $newName = $this->request->getPost('emp_id').'_profile.'.$file->getExtension() ;
+                $stfData = [
+                    'stf_title' => $this->request->getPost('title'),
+                    'stf_firstname' => $this->request->getPost('firstname'),
+                    'stf_lastname' => $this->request->getPost('lastname'),
+                    'stf_gender' => $this->request->getPost('gender'),
+                    'stf_email' => $this->request->getPost('email'),
+                    'stf_department' => $this->request->getPost('department'),
+                    'stf_position' => $this->request->getPost('position'),
+                    'stf_emp_id' => $this->request->getPost('emp_id'),
+                    'stf_status' => 'Active',
+                    'stf_picture' => 'uploads/staff/'.$newName,
+                    'stf_phone' => str_replace(['(',')',' ','-'], '',$this->request->getPost('phone'))
+                ];
+                
+                if($image->withFile($file)
+                ->fit(500,500, 'center')
+                ->save($uploadPath. $newName, 90)
+                ){
+                    //$staff->update($stfData);
+                    $staff->update($stf_id, $stfData);
+                    $fullnames = $this->request->getPost('firstname').' '.$this->request->getPost('lastname');
+                    $session->setFlashdata('success', $fullnames);
+                    
+                    return $this->response->redirect(route_to('staff.list'));
+                    //return view('admin/staffNew', $data);
+                } else{
+                    $session->setFlashdata('fail', 'Updating failed, try again!');
+                    //return $this->response->redirect(route_to('staff.edit'));
+                    return view('admin/staffEdit', $data);
+                    //return view('admin/staffEdit', $data);
+                }
+    
+                //$data = ['uploaded_flleinfo' => new File($filepath)];
+                
+            }
+            $data = ['errors' => 'The file has already been moved.'];
+    
+            //return view('upload_form', $data);
+            return view('admin/staffEdit', $data);
+
         } else{
             $session->destroy();
             return view('auths/login');
@@ -1402,6 +1670,25 @@ class MainController extends BaseController
             return view('auths/login');
         }
     }
+    /**
+     * Function to display a staff department edit form
+     */
+    public function editStaffDepartment($sdp_id)
+    {
+        $data['pageTitle'] = "Tumba-SCS | Staff Department";
+        $data['pageName'] = "Edit Staff Departments";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        $stfDepartment = new StaffDepartment();
+
+        if ($id) {
+            $data['stfDeparts'] = $stfDepartment->where('sdp_id', $sdp_id)->first();
+            return view('admin/staffDepartmentEdit', $data);
+        } else {
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
 
     /**
      * Function to save updated department data
@@ -1437,6 +1724,48 @@ class MainController extends BaseController
                 $session->setFlashdata('success', $this->request->getPost('code'));
                 return redirect()->to(base_url('/admin/dptList'));
             }
+            
+        } else{
+            $session->destroy();
+            return view('auths/login');
+        }
+    }
+    /**
+     * Function to save updated staff departments data
+     */
+    public function updateStaffDepartment()
+    {
+        $data['pageTitle'] = "Tumba-SCS | Staff Departments";
+        $data['pageName'] = "Update Staff Department";
+        $session = \Config\Services::session();
+        $id = $session->get('userID');
+        if ($id) {
+            $stfDpt_id = $this->request->getPost('sdp_id');
+            $staffDepart = new StaffDepartment();
+/*          helper(['form', 'url']);
+            $rules = [
+                'code' => 'required|min_length[2]|alpha_numeric_space|is_unique[scs_departments.dpt_code, dpt_id, {dpt_id}]',
+                'name' => 'required|min_length[4]|alpha_numeric_space|is_unique[scs_departments.dpt_name, dpt_id, {dpt_id}]'
+            ];
+            $error = $this->validate($rules);
+    
+            if (!$error) {
+                $data['error'] = $this->validator;
+                $data['dpt_id'] = $this->request->getVar('dpt_id');
+                $data['dpt_code'] = $this->request->getVar('code');
+                $data['dpt_name'] = $this->request->getVar('name');
+                return view('admin/departmentEdit', $data);
+            } else { */
+
+                $stfDptData = [
+                    'sdp_name' => $this->request->getPost('sdp_name'),
+                    'sdp_desc' => $this->request->getPost('sdp_desc')
+                ];
+                $staffDepart->update($stfDpt_id, $stfDptData);
+                $session->setFlashdata('success', $this->request->getPost('sdp_name'));
+                return $this->response->redirect(route_to('stfDepartmentList.list'));
+                //return redirect()->to(base_url('/admin/stfDptList'));
+            //}
             
         } else{
             $session->destroy();
