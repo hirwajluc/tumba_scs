@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use \AllowDynamicProperties;   // this one in namespace area  
 
 /**
  * Class BaseController
@@ -19,7 +20,10 @@ use Psr\Log\LoggerInterface;
  *
  * For security be sure to declare any new methods as protected or private.
  */
-abstract class BaseController extends Controller
+#[\AllowDynamicProperties]  // above class
+
+
+ abstract class BaseController extends Controller
 {
     /**
      * Instance of the main Request object.
@@ -40,6 +44,7 @@ abstract class BaseController extends Controller
     /**
      * Constructor.
      */
+    #[\ReturnTypeWillChange]   //above class method
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line

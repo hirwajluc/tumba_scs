@@ -36,11 +36,11 @@ use App\Models\User;
                         <h6 class="text-danger"><b> N.B:</b><u>Please, search student's information using his/her Registration Number.</u> </h6>
                     </div>
                     <div class="">
-                        <a href="<?= route_to('card.swap');?>" class="btn btn-outline-success btn-rounded btn-download"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></line></i> Swap Card</a>
+                        <a href="<?= route_to('card.new');?>" class="btn btn-outline-info btn-rounded btn-download"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> New Card</a>
                     </div>
                 </div>
 
-                <form action="<?= route_to('card.save');?>" method="post">
+                <form action="<?= route_to('card.swaped');?>" method="post">
                 <div class="widget-content row">
                     <div class="col-xl-1"></div>
                     <div class="avatar avatar-xl col-xl-11">
@@ -275,7 +275,7 @@ use App\Models\User;
         });
         toast({
             type: 'success',
-            title: '<?=$session->getFlashdata('success').' card is registered';?>',
+            title: '<?=$session->getFlashdata('success').' card is swapped';?>',
             padding: '1em',
         })
     </script>

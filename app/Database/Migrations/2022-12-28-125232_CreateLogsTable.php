@@ -15,8 +15,9 @@ class CreateLogsTable extends Migration
                 `log_card` INT NOT NULL,
                 `log_items` varchar(255),
                 `log_acad_year` INT NOT NULL,
-                `log_time` varchar(255) NOT NULL,
                 `log_status` varchar(25) NOT NULL,
+                `log_created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                `log_updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
                 PRIMARY KEY (`log_id`)
             );
         ");

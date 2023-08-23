@@ -65,7 +65,7 @@
                                 <div class="form-group row">
                                     <label for="company-email" class="col-sm-7 col-form-label col-form-label-sm">Email</label>
                                     <div class="col-sm-12">
-                                        <input type="text" value="<?= (isset($email)) ? $email : ''; ?>" name="email" class="form-control form-control-sm" id="email" placeholder="test@example.com">
+                                        <input type="text" value="<?= (isset($email)) ? $email : ''; ?>" name="email" class="form-control form-control-sm" id="user_email" placeholder="test@example.com">
 
                                         <?php if($validation->getError('email')): ?>
                                             <span>
@@ -89,30 +89,41 @@
                                     
                                     <div class="col-sm-6">
                                         <label for="company-name" class="col-sm-7 col-form-label col-form-label-sm">User Role</label>
-                                        <select name="role" id="role" class="form-control form-control-sm">
-                                            <option disabled selected>-----Select Role-----</option>
-                                            <?php if (isset($roles)):?>
-                                                <?php foreach ($roles as $rol): ?>
-                                                    <?php
-                                                    if(isset($role)):
-                                                        if($rol->rol_id == $role):
-                                                            ?>
-                                                            <option value="<?=$rol->rol_id;?>" selected><?=ucfirst($rol->rol_name);?></option>
-                                                            <?php
+                                        <?php 
+                                        $session = \Config\Services::session();
+                                        $id = $session->get('userID');
+                                        $role = $session->get('role');
+                                        if($role == 1):
+                                        ?>
+                                            <select name="role" id="role" class="form-control form-control-sm">
+                                                <option disabled selected>-----Select Role-----</option>
+                                                <?php if (isset($roles)):?>
+                                                    <?php foreach ($roles as $rol): ?>
+                                                        <?php
+                                                        if(isset($role)):
+                                                            if($rol->rol_id == $role):
+                                                                ?>
+                                                                <option value="<?=$rol->rol_id;?>" selected><?=ucfirst($rol->rol_name);?></option>
+                                                                <?php
+                                                            else:
+                                                                ?>
+                                                                <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
+                                                                <?php
+                                                            endif;
                                                         else:
                                                             ?>
                                                             <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
                                                             <?php
                                                         endif;
-                                                    else:
                                                         ?>
-                                                        <option value="<?=$rol->rol_id;?>"><?=ucfirst($rol->rol_name);?></option>
-                                                        <?php
-                                                    endif;
-                                                    ?>
-                                                <?php endforeach; ?>
-                                            <?php endif;?>
-                                        </select>
+                                                    <?php endforeach; ?>
+                                                <?php endif;?>
+                                            </select>
+                                        <?php elseif($role == 5):?>
+                                            <select name="role" id="role" class="form-control form-control-sm">
+                                                <option value="6" selected>Gate Guard</option>
+                                            </select>
+                                        <?php endif;?>
 
                                         <?php if($validation->getError('role')): ?>
                                             <span>
@@ -275,9 +286,9 @@
     <script>
     // Email
 
-    $("#email").inputmask(
+    $("#user_email").inputmask(
         {
-            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]",
+            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[*{2,6}][*{1,2}].*{1,20}[",
             greedy:!1,onBeforePaste:function(m,a){return(m=m.toLowerCase()).replace("mailto:","")},
             definitions:{"*":
                 {

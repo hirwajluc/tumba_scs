@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="form-image">
-            <div class="l-image" style="background-image: url(assets/img/dark-icon.png); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #060818; background-position: center center; background-repeat: no-repeat; background-size: 75%; background-position-x:  center; background-position-y: center;">
+            <div class="l-image" style="background-image: url(assets/img/dark-icon.png); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #4361EE; background-position: center center; background-repeat: no-repeat; background-size: 75%; background-position-x:  center; background-position-y: center;">
             </div>
         </div>
     </div>

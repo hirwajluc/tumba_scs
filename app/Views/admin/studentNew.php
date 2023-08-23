@@ -331,7 +331,7 @@
 
     $("#email").inputmask(
         {
-            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[.*{2,6}][.*{1,2}]",
+            mask:"*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[*{2,6}][*{1,2}].*{1,20}[",
             greedy:!1,onBeforePaste:function(m,a){return(m=m.toLowerCase()).replace("mailto:","")},
             definitions:{"*":
                 {
@@ -394,7 +394,7 @@
 
             // AJAX request
             $.ajax({
-                url:"<?php echo base_url('/admin/optionJson'); ?>",
+                url:"<?=route_to('option.json');?>",
                 method:"POST",
                 data:{id:id},
                 dataType:"JSON",

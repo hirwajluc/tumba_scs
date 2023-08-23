@@ -41,11 +41,16 @@ $routes->get('/login', 'Login::index', ['as' => 'login']);
 $routes->get('/logout', 'Logout::index', ['as' => 'logout']);
 $routes->post('/authenticate', 'Login::authenticate', ['as' => 'user.log']);
 
-$routes->group("admin", function($routes){
+$routes->group("sys", function($routes){
     //Dashboard
+<<<<<<< HEAD
     $routes->add('home', 'MainController::index', ['as' => 'admin.home']);
     $routes->get('frmValidation', 'MainController::formValidation');
 
+=======
+    $routes->get('home', 'MainController::index', ['as' => 'admin.home']);
+    
+>>>>>>> 3424ee75a40b2b9d71e8d300bea4ef34d1340c29
     //For Student
     $routes->get('student', 'MainController::newStudentForm', ['as' => 'student.new']);
     $routes->post('stdAdd', 'MainController::saveStudent', ['as' => 'student.save']);
@@ -54,12 +59,25 @@ $routes->group("admin", function($routes){
     $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
     $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
     $routes->get('stdCard', 'MainController::newCardForm', ['as' => 'card.new']);
+    $routes->get('stdCardswp', 'MainController::swapCardForm', ['as' => 'card.swap']);
     $routes->post('stdCardOp', 'MainController::saveStudentCard', ['as' => 'card.save']);
+    $routes->post('ardSwapOp', 'MainController::swapStudentCard', ['as' => 'card.swaped']);
     $routes->post('stdJson', 'MainController::getStudentJson', ['as' => 'student.json']);
     $routes->get('stdCardSt/(:num)/(:num)/(:num)', 'MainController::changeCardStatus/$1/$2/$3', ['as' => 'card.update']);
     
+<<<<<<< HEAD
+=======
+    //For Department
+    $routes->get('department', 'MainController::newDepartmentForm', ['as' => 'department.new']);
+    $routes->post('dptAdd', 'MainController::saveDepartment', ['as' => 'department.save']);
+    $routes->get('dptEdit/(:num)', 'MainController::editDepartment/$1', ['as' => 'department.edit']);
+    $routes->get('dptList', 'MainController::listDepartments', ['as' => 'departmentList']);
+    $routes->post('dptUpd', 'MainController::updateDepartment', ['as' => 'department.update']);
+    $routes->get('dptOpts/(:num)', 'MainController::listDepartmentOptions/$1', ['as' => 'department.info']);
+>>>>>>> 3424ee75a40b2b9d71e8d300bea4ef34d1340c29
     
     
+<<<<<<< HEAD
         $routes->get('stdInfo/(:num)', 'MainController::getStudentInfo/$1', ['as' => 'student.info']);
         $routes->get('stdEdit/(:num)', 'MainController::editStudent/$1', ['as' => 'student.edit']);
         $routes->post('stdEditOp', 'MainController::updateStudent', ['as' => 'student.update']);
@@ -107,7 +125,51 @@ $routes->group("admin", function($routes){
 
 
     
+=======
+    //for User
+    $routes->get('userNw', 'MainController::newUserForm', ['as' => 'user.new']);
+    $routes->post('usrAdd', 'MainController::saveUser', ['as' => 'user.save']);
+    $routes->get('users', 'MainController::viewUsers', ['as' => 'user.list']);
+    $routes->get('usrEdit/(:num)', 'MainController::editUser/$1', ['as' => 'user.edit']);
+    $routes->post('usrEditOp', 'MainController::updateUser', ['as' => 'user.update']);
+    $routes->get('usrInfo/(:num)', 'MainController::getUserInfo/$1', ['as' => 'user.info']);
+    $routes->get('usrSt/(:num)/(:num)', 'MainController::changeUserStatus/$1/$2', ['as' => 'user.status']);
+>>>>>>> 3424ee75a40b2b9d71e8d300bea4ef34d1340c29
     
+    
+});
+
+/**
+ * Routes for Delegated Academic User.
+ */
+$routes->group("3", function($routes){
+    //Dashboard
+    $routes->get('/', 'MainController::index', ['as' => 'acaduser.home']);
+});
+
+/**
+ * Routes for Security Officer
+ */
+$routes->group("5", function($routes){
+    //Dashboard
+    $routes->get('/', 'MainController::index', ['as' => 'secofficer.home']);
+    $routes->get('stdLogs', 'SecOfficer::viewStudentsGateLogs', ['as' => 'student.logs']);
+    $routes->post('stdLogFlt', 'SecOfficer::filterStudentLogs', ['as' => 'stdlg.filter']);
+});
+
+/**
+ * Routes for the gate user
+ */
+$routes->group('gt', function($routes){
+    $routes->get('/', 'MainController::index', ['as' => 'gate.home']);
+    $routes->get('mklog', 'GateController::logStudents', ['as' => 'gate.log']);
+});
+
+/**
+ * Routes for general activities
+ */
+$routes->group('main', function($routes){
+    $routes->get('readCard/(:any)/(:num)/(:any)', 'MainController::readCard/$1/$2/$3', ['as' => 'card.read']); 
 });
 
 
